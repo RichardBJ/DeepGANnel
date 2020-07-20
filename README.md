@@ -4,4 +4,7 @@ This is the code that runs an example from Celik et al 2020 https://doi.org/10.1
 Git not fully ready yet. But this should work!
 
 rbj_gan_toon_Git1.ipynb runs two channel input....
+Numan_conv1d_gan.py runs just for one channel (typically raw data)....
+
+Funded by the BBSRC
 
