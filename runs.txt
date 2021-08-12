@@ -1,0 +1,14 @@
+This PC is WIN1064-1036593
+Date is 2021-08-11 22:32:26.552941
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-12 16:49:30.881370
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
