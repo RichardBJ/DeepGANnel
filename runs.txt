@@ -1,0 +1,42 @@
+This PC is Richards-iMac-2
+Date is 2021-08-12 12:40:24.701630
+TF= 2.4.0-rc0
+Script name: ['101_GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is Richards-iMac-2
+Date is 2021-08-12 12:40:35.545149
+TF= 2.4.0-rc0
+Script name: ['101_GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is Richards-iMac-2
+Date is 2021-08-12 12:40:47.365846
+TF= 2.4.0-rc0
+Script name: ['101_GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is Richards-iMac-2
+Date is 2021-08-12 12:46:20.361527
+TF= 2.4.0-rc0
+Script name: ['101_GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is Richards-iMac-2
+Date is 2021-08-12 13:03:18.895179
+TF= 2.0.0
+Script name: ['101_GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is Richards-iMac-2
+Date is 2021-08-12 13:08:01.100406
+TF= 2.0.0
+Script name: ['101_GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 256, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
