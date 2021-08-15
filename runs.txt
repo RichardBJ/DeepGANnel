@@ -187,3 +187,35 @@ Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
 Wasserstein was used? False
 BATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
 
+This PC is WIN1064-1032388
+Date is 2021-08-14 11:47:14.974743
+TF= 2.6.0
+Data is in folder fionadata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1032388
+Date is 2021-08-14 12:34:48.879834
+TF= 2.6.0
+Data is in folder fionadata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.1
+
+This PC is WIN1064-1032388
+Date is 2021-08-14 12:38:44.287860
+TF= 2.6.0
+Data is in folder fionadata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is WIN1064-1032388
+Date is 2021-08-15 10:18:57.768782
+TF= 2.6.0
+Data is in folder fionadata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.02
+
