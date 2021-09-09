@@ -139,3 +139,19 @@ Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
 Wasserstein was used? False
 Adam used (SGD if false) True, switchmode=FalseBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.1
 
+This PC is Moonstation
+Date is 2021-08-15 17:06:27.398358
+TF= 2.0.0
+Data is in folder edr01data
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) True, switchmode=FalseBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.1
+
+This PC is Moonstation
+Date is 2021-08-16 09:33:26.751818
+TF= 2.0.0
+Data is in folder edr01data
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) True, switchmode=FalseBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0, THRESHOLD = 0.1
+
