@@ -120,3 +120,59 @@ Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
 Wasserstein was used? False
 Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
 
+This PC is WIN1064-1036593
+Date is 2021-09-10 18:46:22.861174
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-10 19:03:00.843300
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-10 19:33:21.824234
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-13 15:01:29.134481
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-13 21:37:53.132950
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-13 21:38:36.926504
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-14 07:59:57.921002
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0, THRESHOLD = 0.2
+THRESHOLD NOW SET TO 0.05
