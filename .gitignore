@@ -3,3 +3,5 @@ checkpoint*
 epoch
 backup/*.*
 *.png
+checkpointsaved/*
+temp/*
