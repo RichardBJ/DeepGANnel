@@ -1,3 +1,9 @@
-checkpoint*
-epoch*
+
 images
+checkpoint*
+epoch
+backup/*.*
+*.png
+checkpointsaved/*
+temp/*
+
