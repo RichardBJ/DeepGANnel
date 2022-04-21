@@ -10,6 +10,8 @@ Numan_conv1d_gan.py runs just for one channel (typically raw data).... filder "R
 In general, synthetic output files have "gen" in the title and raw input has the word raw in it.  Perhaps the figshare above is a simpler format to look at since it doesn't have all ther revisions.
 
 Note that we ran each of these models/with different datasets in different branches.  We were tempted to merge these, but actually now have left in the diffferent branches since merging brings with it inherent conflicts.  Differences between the different branches include different datasets, different record lengths and minor changes to the hyperparameters.  Hyperparameters for any given run are now automatically saved to file.
+NOTE the embedding figures were created here: https://github.com/RichardBJ/GANEmbedding
+And this includes the final source and test datasets a little more neatly!
 
 Funded by the BBSRC
 
