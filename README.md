@@ -1,6 +1,6 @@
 # DeepGANnel
 Our DeepGANnel repository
-This is the code that runs an example from [BAll et al 2022](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0267452)
+This is the code that runs an example from [Ball et al 2022](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0267452)
 Data also on FigShare: https://figshare.com/s/fe0eb801ed18691439ea
 Git not fully ready yet. But this should work!
 
