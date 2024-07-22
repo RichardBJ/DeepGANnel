@@ -191,3 +191,507 @@ Data is in folder Lina2
 Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
 Wasserstein was used? False
 Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.05
+This PC is WIN1064-1036593
+Date is 2024-06-16 14:03:44.322577
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 09:23:38.579150
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 09:24:47.407926
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 10:41:35.248102
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 11:48:45.406370
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 12:30:15.793894
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.001, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 13:46:38.815744
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 13:49:30.621299
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-17 17:19:32.511033
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-19 10:34:52.673572
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-19 12:05:43.542712
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-19 12:25:27.755797
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 8192, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-20 09:01:33.484013
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-23 09:59:56.873301
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-25 18:51:28.927263
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-25 18:51:43.775749
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-25 23:12:50.306345
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-26 07:22:29.084984
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-26 16:21:33.995957
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.15
+
+This PC is WIN1064-1036593
+Date is 2024-06-26 16:24:05.915357
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-06-26 16:28:59.985146
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-06-26 17:42:31.949267
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-10 11:36:27.522910
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 10:26:15.646459
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 11:27:13.470863
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 13:29:58.035736
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 13:54:10.065508
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 14:00:03.453815
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 14:07:27.784479
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 14:32:11.395925
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 14:37:17.210086
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 15:59:30.598816
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 18:21:54.034108
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 18:29:08.033974
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 18:34:18.208919
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 18:35:37.577743
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 19:03:16.985824
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 21:14:37.622673
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-12 21:26:39.048856
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 07:45:12.277425
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 07:45:49.682178
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 07:49:00.117518
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 08:02:49.251013
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 08:10:30.868815
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 08:12:07.055726
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 08:12:53.940575
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 08:14:03.868095
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 08:27:06.235317
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-13 15:40:45.474372
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.25
+
+This PC is WIN1064-1036593
+Date is 2024-07-14 00:13:29.419825
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-14 00:13:39.484222
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-14 09:01:55.071987
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.05
+
+This PC is WIN1064-1036593
+Date is 2024-07-16 09:02:47.960736
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-16 09:36:02.997257
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-16 11:03:08.243674
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-16 15:12:50.062149
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-16 16:39:41.132496
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-17 14:03:00.019723
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-18 17:18:52.425694
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-18 18:33:31.271747
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-19 16:58:13.400503
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-19 19:17:05.884436
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2024-07-19 21:06:20.450636
+TF= 2.10.0
+Data is in folder Sam_CAP_IOP
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GAN_Sam_IOP_sim.ipynb', 'GAN_Sam_IOP_sim_MOD1.ipynb', 'GetExtraMetrics.ipynb', 'Untitled.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 1e-06, THRESHOLD = 0.1
+
