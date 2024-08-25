@@ -1,0 +1,123 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "4220e13d-34de-46d6-b846-6daf23c412d6",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "2024-08-24 15:54:18.003590: I metal_plugin/src/device/metal_device.cc:1154] Metal device set to: Apple M3 Max\n",
+      "2024-08-24 15:54:18.003609: I metal_plugin/src/device/metal_device.cc:296] systemMemory: 64.00 GB\n",
+      "2024-08-24 15:54:18.003613: I metal_plugin/src/device/metal_device.cc:313] maxCacheSize: 24.00 GB\n",
+      "2024-08-24 15:54:18.003630: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:305] Could not identify NUMA node of platform GPU ID 0, defaulting to 0. Your kernel may not have been built with NUMA support.\n",
+      "2024-08-24 15:54:18.003645: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:271] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 0 MB memory) -> physical PluggableDevice (device: 0, name: METAL, pci bus id: <undefined>)\n"
+     ]
+    },
+    {
+     "ename": "InvalidArgumentError",
+     "evalue": "Value for attr 'T' of int32 is not in the list of allowed values: bfloat16, half, float, double, complex64, complex128\n\t; NodeDef: {{node Log}}; Op<name=Log; signature=x:T -> y:T; attr=T:type,allowed=[DT_BFLOAT16, DT_HALF, DT_FLOAT, DT_DOUBLE, DT_COMPLEX64, DT_COMPLEX128]> [Op:Log]",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mInvalidArgumentError\u001b[0m                      Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[1], line 47\u001b[0m\n\u001b[1;32m     45\u001b[0m \u001b[38;5;66;03m# Generate a batch of traces\u001b[39;00m\n\u001b[1;32m     46\u001b[0m batch_size \u001b[38;5;241m=\u001b[39m \u001b[38;5;241m100\u001b[39m\n\u001b[0;32m---> 47\u001b[0m traces \u001b[38;5;241m=\u001b[39m tf\u001b[38;5;241m.\u001b[39mstack([simulate_channel() \u001b[38;5;28;01mfor\u001b[39;00m _ \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28mrange\u001b[39m(batch_size)])\n\u001b[1;32m     49\u001b[0m \u001b[38;5;66;03m# Add f-noise (optional)\u001b[39;00m\n\u001b[1;32m     50\u001b[0m \u001b[38;5;66;03m# ... (implement f-noise generation using TensorFlow's signal processing functions)\u001b[39;00m\n\u001b[1;32m     52\u001b[0m \u001b[38;5;28mprint\u001b[39m(traces)\n",
+      "Cell \u001b[0;32mIn[1], line 47\u001b[0m, in \u001b[0;36m<listcomp>\u001b[0;34m(.0)\u001b[0m\n\u001b[1;32m     45\u001b[0m \u001b[38;5;66;03m# Generate a batch of traces\u001b[39;00m\n\u001b[1;32m     46\u001b[0m batch_size \u001b[38;5;241m=\u001b[39m \u001b[38;5;241m100\u001b[39m\n\u001b[0;32m---> 47\u001b[0m traces \u001b[38;5;241m=\u001b[39m tf\u001b[38;5;241m.\u001b[39mstack([\u001b[43msimulate_channel\u001b[49m\u001b[43m(\u001b[49m\u001b[43m)\u001b[49m \u001b[38;5;28;01mfor\u001b[39;00m _ \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28mrange\u001b[39m(batch_size)])\n\u001b[1;32m     49\u001b[0m \u001b[38;5;66;03m# Add f-noise (optional)\u001b[39;00m\n\u001b[1;32m     50\u001b[0m \u001b[38;5;66;03m# ... (implement f-noise generation using TensorFlow's signal processing functions)\u001b[39;00m\n\u001b[1;32m     52\u001b[0m \u001b[38;5;28mprint\u001b[39m(traces)\n",
+      "Cell \u001b[0;32mIn[1], line 28\u001b[0m, in \u001b[0;36msimulate_channel\u001b[0;34m()\u001b[0m\n\u001b[1;32m     27\u001b[0m \u001b[38;5;28;01mdef\u001b[39;00m \u001b[38;5;21msimulate_channel\u001b[39m():\n\u001b[0;32m---> 28\u001b[0m     current_state \u001b[38;5;241m=\u001b[39m tf\u001b[38;5;241m.\u001b[39mrandom\u001b[38;5;241m.\u001b[39mcategorical(\u001b[43mtf\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mmath\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mlog\u001b[49m\u001b[43m(\u001b[49m\u001b[43m[\u001b[49m\u001b[43m[\u001b[49m\u001b[38;5;241;43m1\u001b[39;49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m1\u001b[39;49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m1\u001b[39;49m\u001b[43m]\u001b[49m\u001b[43m]\u001b[49m\u001b[43m)\u001b[49m, \u001b[38;5;241m1\u001b[39m)[\u001b[38;5;241m0\u001b[39m, \u001b[38;5;241m0\u001b[39m]\n\u001b[1;32m     29\u001b[0m     current_trace \u001b[38;5;241m=\u001b[39m tf\u001b[38;5;241m.\u001b[39mzeros(num_steps)\n\u001b[1;32m     31\u001b[0m     \u001b[38;5;28;01mfor\u001b[39;00m step \u001b[38;5;129;01min\u001b[39;00m \u001b[38;5;28mrange\u001b[39m(num_steps):\n",
+      "File \u001b[0;32m~/miniconda3/envs/metal_101/lib/python3.9/site-packages/tensorflow/python/ops/weak_tensor_ops.py:88\u001b[0m, in \u001b[0;36mweak_tensor_unary_op_wrapper.<locals>.wrapper\u001b[0;34m(*args, **kwargs)\u001b[0m\n\u001b[1;32m     86\u001b[0m \u001b[38;5;28;01mdef\u001b[39;00m \u001b[38;5;21mwrapper\u001b[39m(\u001b[38;5;241m*\u001b[39margs, \u001b[38;5;241m*\u001b[39m\u001b[38;5;241m*\u001b[39mkwargs):\n\u001b[1;32m     87\u001b[0m   \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;129;01mnot\u001b[39;00m ops\u001b[38;5;241m.\u001b[39mis_auto_dtype_conversion_enabled():\n\u001b[0;32m---> 88\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mop\u001b[49m\u001b[43m(\u001b[49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[43margs\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[43mkwargs\u001b[49m\u001b[43m)\u001b[49m\n\u001b[1;32m     89\u001b[0m   bound_arguments \u001b[38;5;241m=\u001b[39m signature\u001b[38;5;241m.\u001b[39mbind(\u001b[38;5;241m*\u001b[39margs, \u001b[38;5;241m*\u001b[39m\u001b[38;5;241m*\u001b[39mkwargs)\n\u001b[1;32m     90\u001b[0m   bound_arguments\u001b[38;5;241m.\u001b[39mapply_defaults()\n",
+      "File \u001b[0;32m~/miniconda3/envs/metal_101/lib/python3.9/site-packages/tensorflow/python/ops/gen_math_ops.py:5689\u001b[0m, in \u001b[0;36mlog\u001b[0;34m(x, name)\u001b[0m\n\u001b[1;32m   5687\u001b[0m   \u001b[38;5;28;01mif\u001b[39;00m _result \u001b[38;5;129;01mis\u001b[39;00m \u001b[38;5;129;01mnot\u001b[39;00m \u001b[38;5;28mNotImplemented\u001b[39m:\n\u001b[1;32m   5688\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m _result\n\u001b[0;32m-> 5689\u001b[0m   \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mlog_eager_fallback\u001b[49m\u001b[43m(\u001b[49m\n\u001b[1;32m   5690\u001b[0m \u001b[43m      \u001b[49m\u001b[43mx\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mname\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mname\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mctx\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43m_ctx\u001b[49m\u001b[43m)\u001b[49m\n\u001b[1;32m   5691\u001b[0m \u001b[38;5;28;01mexcept\u001b[39;00m _core\u001b[38;5;241m.\u001b[39m_SymbolicException:\n\u001b[1;32m   5692\u001b[0m   \u001b[38;5;28;01mpass\u001b[39;00m  \u001b[38;5;66;03m# Add nodes to the TensorFlow graph.\u001b[39;00m\n",
+      "File \u001b[0;32m~/miniconda3/envs/metal_101/lib/python3.9/site-packages/tensorflow/python/ops/gen_math_ops.py:5733\u001b[0m, in \u001b[0;36mlog_eager_fallback\u001b[0;34m(x, name, ctx)\u001b[0m\n\u001b[1;32m   5731\u001b[0m _inputs_flat \u001b[38;5;241m=\u001b[39m [x]\n\u001b[1;32m   5732\u001b[0m _attrs \u001b[38;5;241m=\u001b[39m (\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mT\u001b[39m\u001b[38;5;124m\"\u001b[39m, _attr_T)\n\u001b[0;32m-> 5733\u001b[0m _result \u001b[38;5;241m=\u001b[39m \u001b[43m_execute\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mexecute\u001b[49m\u001b[43m(\u001b[49m\u001b[38;5;124;43mb\u001b[39;49m\u001b[38;5;124;43m\"\u001b[39;49m\u001b[38;5;124;43mLog\u001b[39;49m\u001b[38;5;124;43m\"\u001b[39;49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m1\u001b[39;49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43minputs\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43m_inputs_flat\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mattrs\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43m_attrs\u001b[49m\u001b[43m,\u001b[49m\n\u001b[1;32m   5734\u001b[0m \u001b[43m                           \u001b[49m\u001b[43mctx\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mctx\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mname\u001b[49m\u001b[38;5;241;43m=\u001b[39;49m\u001b[43mname\u001b[49m\u001b[43m)\u001b[49m\n\u001b[1;32m   5735\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m _execute\u001b[38;5;241m.\u001b[39mmust_record_gradient():\n\u001b[1;32m   5736\u001b[0m   _execute\u001b[38;5;241m.\u001b[39mrecord_gradient(\n\u001b[1;32m   5737\u001b[0m       \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mLog\u001b[39m\u001b[38;5;124m\"\u001b[39m, _inputs_flat, _attrs, _result)\n",
+      "File \u001b[0;32m~/miniconda3/envs/metal_101/lib/python3.9/site-packages/tensorflow/python/eager/execute.py:53\u001b[0m, in \u001b[0;36mquick_execute\u001b[0;34m(op_name, num_outputs, inputs, attrs, ctx, name)\u001b[0m\n\u001b[1;32m     51\u001b[0m \u001b[38;5;28;01mtry\u001b[39;00m:\n\u001b[1;32m     52\u001b[0m   ctx\u001b[38;5;241m.\u001b[39mensure_initialized()\n\u001b[0;32m---> 53\u001b[0m   tensors \u001b[38;5;241m=\u001b[39m \u001b[43mpywrap_tfe\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43mTFE_Py_Execute\u001b[49m\u001b[43m(\u001b[49m\u001b[43mctx\u001b[49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_handle\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mdevice_name\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mop_name\u001b[49m\u001b[43m,\u001b[49m\n\u001b[1;32m     54\u001b[0m \u001b[43m                                      \u001b[49m\u001b[43minputs\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mattrs\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[43mnum_outputs\u001b[49m\u001b[43m)\u001b[49m\n\u001b[1;32m     55\u001b[0m \u001b[38;5;28;01mexcept\u001b[39;00m core\u001b[38;5;241m.\u001b[39m_NotOkStatusException \u001b[38;5;28;01mas\u001b[39;00m e:\n\u001b[1;32m     56\u001b[0m   \u001b[38;5;28;01mif\u001b[39;00m name \u001b[38;5;129;01mis\u001b[39;00m \u001b[38;5;129;01mnot\u001b[39;00m \u001b[38;5;28;01mNone\u001b[39;00m:\n",
+      "\u001b[0;31mInvalidArgumentError\u001b[0m: Value for attr 'T' of int32 is not in the list of allowed values: bfloat16, half, float, double, complex64, complex128\n\t; NodeDef: {{node Log}}; Op<name=Log; signature=x:T -> y:T; attr=T:type,allowed=[DT_BFLOAT16, DT_HALF, DT_FLOAT, DT_DOUBLE, DT_COMPLEX64, DT_COMPLEX128]> [Op:Log]"
+     ]
+    }
+   ],
+   "source": [
+    "import tensorflow as tf\n",
+    "import numpy as np\n",
+    "\n",
+    "# Parameters\n",
+    "n = 1  # Number of channels\n",
+    "T = 50  # Total simulation time (ms)\n",
+    "open_rate = 2  # Transition rate from closed to open (s^-1)\n",
+    "close_rate = 1  # Transition rate from open to closed (s^-1)\n",
+    "inactivate_rate = 1  # Transition rate from open to inactivated (s^-1)\n",
+    "deactivation_rate = 2  # Transition rate from inactivated to open (s^-1)\n",
+    "conductance = 5e-12  # Single Channel Conductance (pS)\n",
+    "voltage = 20e-3\n",
+    "H = 0.8  # Hurst exponent (controls f-noise properties)\n",
+    "dt = 0.01  # Time step (ms)\n",
+    "num_steps = int(T / dt)\n",
+    "fn = 0.01  # Scaling factor for f-noise\n",
+    "noise_sd = 0.05\n",
+    "\n",
+    "# Transition matrix\n",
+    "transition_matrix = np.array([\n",
+    "    [-close_rate, close_rate, 0],\n",
+    "    [open_rate, -(open_rate + inactivate_rate), inactivate_rate],\n",
+    "    [0, deactivation_rate, -deactivation_rate]\n",
+    "])\n",
+    "\n",
+    "# Simulate transitions\n",
+    "def simulate_channel():\n",
+    "    current_state = tf.random.categorical(tf.math.log([[1, 1, 1]]), 1)[0, 0]\n",
+    "    current_trace = tf.zeros(num_steps)\n",
+    "\n",
+    "    for step in range(num_steps):\n",
+    "        probs = transition_matrix[current_state] * dt\n",
+    "        probs[current_state] = 1 - tf.reduce_sum(probs[-current_state])\n",
+    "        next_state = tf.random.categorical(tf.math.log([probs]), 1)[0, 0]\n",
+    "        current_state = next_state\n",
+    "\n",
+    "        current_trace[step] = tf.cond(\n",
+    "            tf.equal(current_state, 0),\n",
+    "            lambda: voltage * conductance * 1e12,\n",
+    "            lambda: 0\n",
+    "        )\n",
+    "\n",
+    "    return current_trace\n",
+    "\n",
+    "# Generate a batch of traces\n",
+    "batch_size = 100\n",
+    "traces = tf.stack([simulate_channel() for _ in range(batch_size)])\n",
+    "\n",
+    "# Add f-noise (optional)\n",
+    "# ... (implement f-noise generation using TensorFlow's signal processing functions)\n",
+    "\n",
+    "print(traces)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b03fb9a8-e60b-4972-b255-bf425ab54827",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.19"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
