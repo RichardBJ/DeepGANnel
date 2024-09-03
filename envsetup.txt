@@ -1,0 +1,65 @@
+conda list
+ipython
+conda uninstall numpy
+ipython
+conda list
+pip uninstasll tensorflow
+pip uninstall tensorflow
+pip install tensorflow==2.13
+conda deactivate
+conda env remove -n TF213
+conda create -n TF22 python=3.7
+conda activate TF22
+pip install tensorflow-gpu==2.2.0
+conda deactivate
+conda env remove -n TF22
+conda create -n TF10 python=3.9
+conda activate TF10
+pip install "tensorflow<2.11" 
+pip install tensorflow_probability=0.18
+pip install tensorflow_probability==0.18
+ipython
+conda install ipython ipkernels
+conda install ipython ipykernel
+ipython
+pip list
+ipython
+pip list
+pip numpy uninstall
+pip uninstall numpy
+pip install numpy==1.9
+conda uninstall numpy
+conda install numpy=1.9
+pip install numpy==1.26
+ipython
+jupyter notebook
+pip list
+jupyter
+conda list
+jupyter-notebook
+conda install notebook
+jupyter notebook
+cd users
+cd rbj
+cd documents
+cd github
+cd geepgannel
+cd deepdannel
+doskey /history > envsetup.txt
+doskey /history > envsetup.txtc:\users\rbj\documents\github\deepgannel\envsetup.txt
+doskey /history > c:\users\rbj\documents\github\deepgannel\envsetup.txt
+conda deactivate
+conda activate TF210
+conda list
+conda env list
+conda activate TF10
+conda install sklearn
+conda install scikit-learn
+conda install pandas
+conda install tqdm
+conda install matplotlib
+Get-Content (Get-PSReadlineOption).HistorySavePath > C:\path\to\your\file.txt
+Get-Content (Get-PSReadlineOption).HistorySavePath > C:\historyfile.txt
+Get-Content (Get-PSReadlineOption).HistorySavePath > C:\users\rbj\documents\historyfile.txt
+doskey
+doskey /history
