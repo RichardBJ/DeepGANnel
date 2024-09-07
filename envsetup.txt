@@ -63,3 +63,7 @@ Get-Content (Get-PSReadlineOption).HistorySavePath > C:\historyfile.txt
 Get-Content (Get-PSReadlineOption).HistorySavePath > C:\users\rbj\documents\historyfile.txt
 doskey
 doskey /history
+
+FOOLISHLY I then ran
+pip install --upgrade jupyter_server jupyterlab jupyter-lsp
+I should clearly have run conda..... since all conda above in the ipython regard
