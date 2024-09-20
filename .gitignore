@@ -1,4 +1,3 @@
-
 images
 checkpoint*
 epoch
@@ -6,4 +5,5 @@ backup/*.*
 *.png
 checkpointsaved/*
 temp/*
+.DS_Store
 
