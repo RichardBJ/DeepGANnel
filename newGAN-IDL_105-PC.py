@@ -29,10 +29,13 @@ Noise could be more authentic still.
 a. Some slow-wave. freq, phase, amp.
 b. Some open channel noise. tf.boolean_mask ...if open add white noise? could be slow.
 c. replace noise with Sam noise? was it all TF?
-
+d. SPIKE GENERATION SHOULD BE CHANGED, max should be x not abs(x) and number should be abs(x) not be abs(x) +1. X
+e. pink noise should also be tf.function decorated!! X
 
 CHANNEL IS LANE 0
 RAW IS LANE 1
+
+RUNNING ON NUMAN-NO_GPU in the TF10 envirnoment which means tf2.10!!! not tf1.0 :-)
 """
 import os
 import logging
@@ -57,7 +60,11 @@ print(f"Number of GPUs detected: {len(gpus)}")
 
 @tf.function
 def spike_up(signal, num_spikes=10, minh=-0.1, maxh=0.1):
-    spike_heights = tf.random.uniform(shape=[num_spikes], minval=-maxh, maxval=maxh) 
+    if maxh < 0:
+        minh=maxh
+    else:
+        minh=0
+    spike_heights = tf.random.uniform(shape=[num_spikes], minval=-minh, maxval=maxh) 
     spike_indices = tf.random.uniform(shape=[num_spikes], 
                                       minval=0, maxval=tf.shape(signal)[0], dtype=tf.int32)
     
@@ -153,7 +160,7 @@ def sim_channel(params):
     #image = tf.stack([channels,noise],axis=1)
     
     # Manipulate the RAW column with offsets and scale
-    modified_raw_column = (channels * SCALE) + OFFSET
+    modified_raw_column = (channels * scale) + offset
     modified_raw_column = spike_up(modified_raw_column, num_spikes=nSpikes, maxh=spikeMax) + noise
 
     # Concatenate the modified first column with the second column
@@ -164,11 +171,10 @@ def sim_channel(params):
     return image
 
 
-
-
 # In[5]:
 
 
+@tf.function
 def generate_pink_noise(white_noise):
     #tf.random.set_seed(None)
     T = tf.shape(white_noise)[0]
@@ -228,7 +234,7 @@ num_spikes=10
 # Generate training data
 training_data = []
 lens=[]
-
+"""Actually replace "Anoise" with spikeMax later"""
 for sample in tqdm(range(num_samples)):   
     params = tf.stack([kc12, kc21, Anoise, Fnoise, SCALE, OFFSET, num_spikes, kco1, koc2, ko12,ko21])  # Use tf.stack instead of tf.constant
     segment = sim_channel(params)
@@ -319,11 +325,11 @@ def make_generator_model():
     kc12= tf.keras.layers.Lambda(lambda x: tf.abs(x)+ 1e-6)(raw_output[:, 0:1])  # Positive, non-zero
     kc21 = tf.keras.layers.Lambda(lambda x: tf.abs(x)+ 1e-3)(raw_output[:, 1:2])  # Positive, non-zero
     #phase = tf.keras.layers.Lambda(lambda x: x * 2 * np.pi)(raw_output[:, 2:3])  # Any value, scaled to [0, 2π]
-    spikeMax = tf.keras.layers.Lambda(lambda x: tf.abs(x))(raw_output[:, 2:3])  # Positive then negatives arrive in the function...
+    spikeMax = raw_output[:, 2:3] 
     Fnoise = tf.keras.layers.Lambda(lambda x: tf.abs(x))(raw_output[:, 3:4])  # Positive  
     scale = tf.keras.layers.Lambda(lambda x: tf.abs(x)+0.1)(raw_output[:, 4:5])  # Positive  should it be?
     offset = raw_output[:, 5:6]
-    nSpikes = tf.keras.layers.Lambda(lambda x: tf.abs(x)+ 1)(raw_output[:, 6:7])
+    nSpikes = tf.keras.layers.Lambda(lambda x: tf.round(x))(raw_output[:, 6:7])
     kco1 = tf.keras.layers.Lambda(lambda x: tf.abs(x)+ 1e-3)(raw_output[:, 7:8])  # Positive, non-zero
     koc2 = tf.keras.layers.Lambda(lambda x: tf.abs(x)+ 1e-6)(raw_output[:, 8:9])  # Positive, non-zero
     ko12 = tf.keras.layers.Lambda(lambda x: tf.abs(x)+ 1e-3)(raw_output[:, 9:10])  # Positive, non-zero
@@ -466,17 +472,22 @@ def train(dataset, epochs):
         #print("EgNoise", EgNoise[0])
         generated_params = generator(EgNoise, training=False)
         #print(steps_per_epoch)
-        # Define parameter names
-        param_names = ['To1', 'Tc1', 'spikeMax', 'Fnoise', 'scale',"offset","nSpikes", "Tc2", "To2","k5","k6"]
+        # Define parameter names kc12, kc21, spikeMax, Fnoise, scale, offset, nSpikes, kco1, koc2, ko12, ko21
+        param_names = ['kc12', 'kc21', 'spikeMax', 'Fnoise', 'scale',"offset","nSpikes", "kco1", "koc2","ko12","ko21"]
         random_index1 = tf.random.uniform(shape=[], minval=0, maxval=egs-1, dtype=tf.int32)
 
         params_list = generated_params[random_index1].numpy().tolist()
         #Might be fun to collect these up to plot convergence if wanted?
                 
         # Print each parameter with its name
-        for name, param in zip(param_names, params_list):
-            tf.print(f"{name}: {round(param, 2)}. ", end = "  ")
-        """print("params", generated_params[0])"""
+        with tf.io.gfile.GFile('output.csv', mode='a') as file:
+            # Check if the file is empty to write the header
+            if file.tell() == 0:
+                file.write(','.join(param_names) + '\n')
+
+            for name, param in zip(param_names, params_list):
+                tf.print(f"{name}: {round(param, 2)}|", end = " ")
+                file.write(f"{name},{round(param, 2)}\n")
          
         gen_waves=[]
         for i in range(egs):
