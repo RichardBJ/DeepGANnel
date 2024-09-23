@@ -6,4 +6,7 @@ backup/*.*
 checkpointsaved/*
 temp/*
 .DS_Store
+output.csv
+lr.txt
+save.txt
 
