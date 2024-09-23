@@ -1,5 +1,5 @@
 images
-checkpoint*
+*checkpoint*
 epoch
 backup/*.*
 *.png
@@ -9,4 +9,5 @@ temp/*
 output.csv
 lr.txt
 save.txt
+.ipynb_checkpoints/
 
