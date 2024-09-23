@@ -21,3 +21,14 @@ kco1,0.14
 koc2,0.02
 ko12,0.02
 ko21,0.1
+kc12,0.82
+kc21,0.89
+spikeMax,0.76
+Fnoise,0.52
+scale,0.88
+offset,0.65
+nSpikes,7.72
+kco1,0.7
+koc2,0.68
+ko12,0.64
+ko21,0.64
