@@ -1,9 +1,13 @@
 images
-checkpoint*
+*checkpoint*
 epoch
 backup/*.*
 *.png
 checkpointsaved/*
 temp/*
 .DS_Store
+output.csv
+lr.txt
+save.txt
+.ipynb_checkpoints/
 
