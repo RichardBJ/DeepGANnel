@@ -6,10 +6,13 @@ backup/*.*
 checkpointsaved/*
 temp/*
 .DS_Store
-output.csv
 lr.txt
 save.txt
 .ipynb_checkpoints/
-*.parquet
 *Identifier
 2024_06_17/*
+
+# Ignore the big files only
+MBPsimOutput/*.parquet
+output*.parquet
+output*.csv
