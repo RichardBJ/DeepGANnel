@@ -10,3 +10,6 @@ output.csv
 lr.txt
 save.txt
 .ipynb_checkpoints/
+*.parquet
+*Identifier
+2024_06_17/*
