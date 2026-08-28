@@ -1,0 +1,22 @@
+Conditional diffusion training run
+==================================
+
+Saved model = 20260807-093106_model_DDPM.pt
+Resume checkpoint = ion_channel_diffusion_model.pt
+Data source = REAL data: 1 file(s) from ./pages (150755 rows)
+Training files = 22_11.csv
+Sequence length = 128
+Window stride = 16
+Batch size = 32
+Epochs requested = 20
+Learning rate = 0.0001
+Diffusion steps = 200
+U-Net channels = 64
+Conditioning channels = 2
+Two-stage (slow phase) = True
+Slow factor = 64
+Coarse epochs = 80
+Decimation phases = 1
+Seed = 42
+Fine norm = cond_mean=0.654322, cond_std=0.475589, cur_mean=9.37509, cur_std=4.96727
+Coarse norm = cond_mean=[0.6825, 6.7151, 3.1542, 8.4029], cond_std=[0.4563, 1.4509, 2.083, 1.4269], cur_mean=9.65776, cur_std=4.71216

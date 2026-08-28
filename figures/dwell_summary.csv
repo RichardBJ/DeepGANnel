@@ -1,0 +1,7 @@
+origin,state,n,mean_ms,median_ms
+Ground truth (simulated),Closed,546,8.175641025621971,1.9999999999953386
+Ground truth (simulated),Open,546,10.139377289353657,5.849999999986365
+Real (expert idealised),Closed,4171,6.268209062560313,1.5499999999963874
+Real (expert idealised),Open,4171,3.6095300886993313,1.9999999999953386
+Recovered from generated current,Closed,1033,4.438334946746674,0.49999999999883465
+Recovered from generated current,Open,1033,5.242207163588944,2.799999999993474

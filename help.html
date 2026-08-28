@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ion Diffusion Trainer — Help</title>
+<style>
+  :root{
+    --bg:#1b1d1f;
+    --panel:#232629;
+    --panel-2:#282c30;
+    --line:#383d42;
+    --ink:#e8e6e0;
+    --ink-dim:#9aa0a6;
+    --real:#7cb87f;     /* matches the app's "real" trace colour */
+    --gen:#d98e4a;      /* matches the app's "generated" trace colour */
+    --loss:#6a9fd8;     /* matches the app's loss-curve colour */
+    --mono:'IBM Plex Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:'Inter', -apple-system, 'Segoe UI', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); line-height:1.6; font-size:15.5px;
+  }
+  a{color:var(--loss); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  code, .k{
+    font-family:var(--mono); font-size:0.88em; background:var(--panel-2);
+    padding:0.1em 0.4em; border-radius:3px; color:#f0c98a;
+  }
+  .layout{display:flex; min-height:100vh;}
+
+  /* ---- sidebar ---- */
+  nav{
+    width:250px; flex-shrink:0; background:var(--panel);
+    border-right:1px solid var(--line); padding:28px 20px;
+    position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  nav .brand{
+    font-family:var(--mono); font-size:0.78em; letter-spacing:0.08em;
+    color:var(--ink-dim); text-transform:uppercase; margin-bottom:4px;
+  }
+  nav h1{
+    font-size:1.05em; margin:0 0 22px 0; line-height:1.35;
+    font-family:var(--mono); font-weight:600;
+  }
+  nav .group-label{
+    font-size:0.72em; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-dim); margin:20px 0 8px 0; font-family:var(--mono);
+  }
+  nav ul{list-style:none; margin:0; padding:0;}
+  nav li a{
+    display:block; padding:5px 0 5px 12px; color:var(--ink-dim);
+    border-left:2px solid transparent; font-size:0.92em;
+  }
+  nav li a:hover{color:var(--ink); text-decoration:none;}
+  nav li a.active{color:var(--ink); border-left-color:var(--loss); font-weight:600;}
+
+  /* ---- main ---- */
+  main{flex:1; max-width:820px; padding:48px 56px 120px 56px;}
+  .lede{color:var(--ink-dim); font-size:1.05em; margin-bottom:8px;}
+  h2{
+    font-family:var(--mono); font-size:1.5em; margin:64px 0 6px 0;
+    padding-top:20px; border-top:1px solid var(--line);
+    scroll-margin-top:24px;
+  }
+  h2:first-of-type{border-top:none; margin-top:36px;}
+  h3{
+    font-size:1.08em; margin:30px 0 10px 0; color:var(--ink);
+    scroll-margin-top:24px;
+  }
+  h3 .k{font-size:0.85em; margin-right:2px;}
+  p{margin:10px 0;}
+  .subtle{color:var(--ink-dim); font-size:0.92em;}
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:6px;
+    padding:16px 20px; margin:14px 0;
+  }
+  .card.warn{border-left:3px solid var(--gen);}
+  .card.note{border-left:3px solid var(--loss);}
+  .card p:first-child{margin-top:0;}
+  .card p:last-child{margin-bottom:0;}
+
+  table{width:100%; border-collapse:collapse; margin:14px 0 24px 0; font-size:0.93em;}
+  th, td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{color:var(--ink-dim); font-weight:600; font-family:var(--mono); font-size:0.85em; text-transform:uppercase; letter-spacing:0.03em;}
+  td:first-child{white-space:nowrap; font-family:var(--mono); color:#f0c98a; font-size:0.92em;}
+
+  .waveform{width:100%; height:34px; margin:36px 0; opacity:0.55;}
+  .waveform path{fill:none; stroke-width:1.4;}
+
+  .steps{counter-reset:step; list-style:none; padding:0; margin:14px 0;}
+  .steps li{
+    counter-increment:step; position:relative; padding:4px 0 14px 34px; margin:0;
+  }
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:3px;
+    width:22px; height:22px; border-radius:50%; background:var(--panel-2);
+    border:1px solid var(--line); color:var(--ink-dim); font-family:var(--mono);
+    font-size:0.75em; display:flex; align-items:center; justify-content:center;
+  }
+
+  footer{margin-top:70px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-dim); font-size:0.85em;}
+
+  ::selection{background:var(--loss); color:#0e1011;}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav>
+  <div class="brand">diffusion_app.py</div>
+  <h1>Ion Diffusion Trainer — Help</h1>
+
+  <div class="group-label">Start here</div>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#running">Running the app</a></li>
+    <li><a href="#workflow">Typical workflow</a></li>
+  </ul>
+
+  <div class="group-label">Train panel</div>
+  <ul>
+    <li><a href="#train-data">Data settings</a></li>
+    <li><a href="#train-model">Model settings</a></li>
+    <li><a href="#train-slow">Slow-phase (envelope)</a></li>
+    <li><a href="#train-resume">Resume &amp; checkpoints</a></li>
+    <li><a href="#train-outputs">Reading the live view</a></li>
+  </ul>
+
+  <div class="group-label">Generate panel</div>
+  <ul>
+    <li><a href="#gen-matrix">Transition matrix</a></li>
+    <li><a href="#gen-settings">Generation settings</a></li>
+    <li><a href="#gen-output">Output file</a></li>
+  </ul>
+
+  <div class="group-label">Reference</div>
+  <ul>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<h2 id="overview">Overview</h2>
+<p class="lede">A Gradio dashboard for training and sampling a two-stage conditional diffusion model of ion-channel current traces.</p>
+<p>The app has two panels. <strong>Train</strong> fits a diffusion model to your real recordings (or synthetic toy data) and shows the loss curve, a sample trace and an amplitude histogram updating live as it trains. <strong>Generate</strong> uses a trained model to simulate a channel-gating sequence from a transition matrix, then dresses it with the model's learned noise, and exports the result as a Parquet file.</p>
+
+<div class="card note">
+<p>The model is trained on your <em>idealisation</em> (which channel state is active at each sample) paired with the matching <em>real current</em> trace, and learns to generate a plausible noisy current for a given idealisation.</p>
+</div>
+
+<h2 id="running">Running the app</h2>
+<p>From a terminal, in the folder containing <code>diffusion_app.py</code> and <code>diffusion_103.py</code>:</p>
+<div class="card"><code>python diffusion_app.py</code></div>
+<p>Gradio prints a local URL — open it in your browser. There's no separate install step covered here beyond having the usual packages (<code>torch</code>, <code>gradio</code>, <code>pandas</code>, <code>numpy</code>, <code>matplotlib</code>) available.</p>
+
+<h2 id="workflow">Typical workflow</h2>
+<ol class="steps">
+  <li>Put your recordings (<code>.csv</code> or <code>.parquet</code>) in a folder, or tick <span class="k">Force synthetic toy data</span> to try the app without real data first.</li>
+  <li>Set the <span class="k">CSV folder</span> field to that folder's path.</li>
+  <li>Click <span class="k">Scan input</span> — this reads your files and sets a sensible range on the <span class="k">how slow</span> slider.</li>
+  <li>Leave defaults or adjust parameters (see below), then click <span class="k">Start training</span>.</li>
+  <li>Watch the loss curve, sample trace and histogram update every <span class="k">Update every N steps</span> steps. A checkpoint is saved automatically at the end of every epoch.</li>
+  <li>Once training finishes, switch to the <strong>Generate</strong> panel, set your transition matrix, and click <span class="k">Generate &amp; download Parquet</span>.</li>
+</ol>
+
+<svg class="waveform" viewBox="0 0 800 34" preserveAspectRatio="none">
+  <path d="M0,17 L40,17 L48,4 L56,30 L64,17 L120,17 L128,10 L136,24 L144,17 L220,17 L226,6 L234,28 L240,17 L340,17 L348,12 L356,22 L364,17 L460,17 L466,3 L474,31 L482,17 L600,17 L606,9 L614,25 L620,17 L800,17" stroke="#7cb87f"/>
+</svg>
+
+<h2 id="train-data">Train panel — data settings</h2>
+<table>
+<tr><th>Control</th><th>What it does</th></tr>
+<tr><td>CSV folder</td><td>Path to the folder of recordings. Every <code>.csv</code>/<code>.parquet</code> file inside is loaded as a "page".</td></tr>
+<tr><td>Force synthetic toy data</td><td>Ignores the folder entirely and trains on a generated toy signal — useful for a quick smoke test.</td></tr>
+<tr><td>&nbsp;</td><td class="subtle">If the folder is empty or missing, the app falls back to synthetic data automatically and says so in the status box.</td></tr>
+</table>
+
+<h2 id="train-model">Train panel — model settings</h2>
+<table>
+<tr><th>Control</th><th>What it does</th></tr>
+<tr><td>Sequence length</td><td>Length of the training window in samples. Rounded down to a multiple of 4 (the U-Net needs that).</td></tr>
+<tr><td>Epochs</td><td>Full passes over the training windows.</td></tr>
+<tr><td>Batch size</td><td>Windows per optimiser step.</td></tr>
+<tr><td>Learning rate</td><td>Step size for the AdamW optimiser.</td></tr>
+<tr><td>Diffusion steps</td><td>Number of noising/denoising steps the diffusion process uses.</td></tr>
+<tr><td>Model width</td><td>Number of channels in the U-Net — bigger is more capacity, slower to train.</td></tr>
+<tr><td>Window stride</td><td>Gap in samples between consecutive training windows. Smaller = more overlapping windows = more training data per page.</td></tr>
+<tr><td>Update every N steps</td><td>How often the plots and status text refresh.</td></tr>
+<tr><td>Sample traces</td><td>How many example windows to draw for the live "latest simulation" plot.</td></tr>
+</table>
+
+<h2 id="train-slow">Train panel — slow-phase (envelope)</h2>
+<p>Ion current often has a slow-moving envelope on top of the fast noisy detail. Ticking this on trains the model in <strong>two stages</strong>: a coarse model of the slow envelope first, then a fine model of the detail, conditioned on both the idealisation and the coarse envelope. Leaving it off trains a single stage, conditioned on the idealisation alone.</p>
+<table>
+<tr><th>Control</th><th>What it does</th></tr>
+<tr><td>Model a slow phase</td><td>Turns the two-stage cascade on/off.</td></tr>
+<tr><td>How slow</td><td>Samples averaged into each envelope step. <span class="k">Scan input</span> sets this slider's usable range for your data.</td></tr>
+<tr><td>Slow-phase training ×</td><td>Multiplier on <span class="k">Epochs</span> for how long the coarse stage trains, relative to the fine stage.</td></tr>
+<tr><td>Decimation phases</td><td>Number of phase-offsets used when decimating for the coarse stage — a form of data augmentation. <code>1</code> turns it off.</td></tr>
+</table>
+
+<div class="card warn">
+<p><strong>"Data too short for 'how slow' = N"</strong> — the decimated page is shorter than the coarse model's window. Lower the <span class="k">how slow</span> slider, or click <span class="k">Scan input</span> to reset it to a value your data can support.</p>
+</div>
+
+<h2 id="train-resume">Train panel — resume &amp; checkpoints</h2>
+<p>The <span class="k">When I press Start</span> option chooses between <em>Start fresh</em> and <em>Resume from last checkpoint</em>. Resuming re-loads the architecture (width, diffusion steps) from the saved checkpoint — your slider values for those are ignored if you're resuming, but learning rate, window settings and epoch count still come from the form.</p>
+<p>Every epoch, the model is checkpointed to <code>ion_channel_diffusion_model.pt</code> (an atomic save, so a crash mid-write can't corrupt it). When a training run finishes, that checkpoint is also archived under a timestamped filename with a matching <code>.txt</code> file describing exactly how it was trained.</p>
+<div class="card note"><p>Resuming only works if the new run's conditioning matches the checkpoint's (i.e. slow-phase on/off is the same). If it doesn't match, the app tells you in the status box and starts fresh instead of failing.</p></div>
+
+<h2 id="train-outputs">Train panel — reading the live view</h2>
+<table>
+<tr><th>Plot</th><th>Shows</th></tr>
+<tr><td>Loss</td><td>eps-MSE per optimiser step, log scale.</td></tr>
+<tr><td>Latest simulation</td><td>Three stacked traces for one window: idealisation, real current, generated current — so you can eyeball whether the model's noise looks plausible.</td></tr>
+<tr><td>Amplitude histogram</td><td>All-points density of real vs generated current across the sampled batch.</td></tr>
+<tr><td>Slow envelope</td><td>Only appears if slow-phase is on: the real envelope vs the coarse model's, on a fixed reference page. Use the <span class="k">Envelope samples to show</span> slider to zoom in/out — this redraws instantly from cached data rather than waiting for the next training step.</td></tr>
+</table>
+<p class="subtle">The status text updates every ~2 seconds even if the browser connection drops mid-run, so a long training job is safe to leave running in the background.</p>
+
+<h2 id="gen-matrix">Generate panel — transition matrix</h2>
+<p>The Markov chain governing channel state transitions. Each row is the probability of moving from that state to every other state, and should sum to 1 (the app renormalises rows for you if they don't).</p>
+<table>
+<tr><th>Control</th><th>What it does</th></tr>
+<tr><td>Transition matrix</td><td>Editable grid — resize by adding/removing rows and columns.</td></tr>
+<tr><td>Open-state indices</td><td>Comma-separated list of which states count as "open" (current flows), e.g. <code>2,3</code>.</td></tr>
+<tr><td>Number of channels</td><td>How many independent copies of this chain to simulate together.</td></tr>
+<tr><td>Preview idealisation</td><td>Simulates a short idealisation and plots open-channel count over time, so you can check the matrix behaves as expected before committing to a long, slow generation run.</td></tr>
+</table>
+
+<h2 id="gen-settings">Generate panel — generation settings</h2>
+<table>
+<tr><th>Control</th><th>What it does</th></tr>
+<tr><td>Idealisation preview length</td><td>Length of the preview-only simulation (does not affect the final export).</td></tr>
+<tr><td>Rows to generate</td><td>Length of the full idealisation to simulate and dress with noise.</td></tr>
+<tr><td>Decimation factor</td><td>Downsamples the exported rows by this factor (every Nth row kept).</td></tr>
+<tr><td>Seed</td><td>Random seed for the idealisation simulation, for reproducibility.</td></tr>
+<tr><td>Trained model checkpoint</td><td>Path to the <code>.pt</code> file to sample from — defaults to the one training just saved.</td></tr>
+</table>
+<div class="card warn"><p><strong>"No trained model at '...'"</strong> — you clicked Generate before any training run had saved a checkpoint at that path. Train first, or point the checkpoint field at an existing file.</p></div>
+
+<h2 id="gen-output">Generate panel — output file</h2>
+<p>Clicking <span class="k">Generate &amp; download Parquet</span> writes <code>generated_dataset.parquet</code> with three columns:</p>
+<table>
+<tr><th>Column</th><th>Contents</th></tr>
+<tr><td>Time</td><td>Seconds, assuming a 10 kHz sample rate.</td></tr>
+<tr><td>Channels</td><td>Simulated open-channel count at each sample (the idealisation).</td></tr>
+<tr><td>Noisy Current</td><td>The model-generated current for that idealisation.</td></tr>
+</table>
+<p>If the checkpoint is a two-stage (slow-phase) model, generation runs the coarse envelope pass first, then the fine detail pass conditioned on it — you'll see the progress bar split roughly 40/60 between the two.</p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<table>
+<tr><th>Message</th><th>What's happening</th></tr>
+<tr><td>Data too short for 'how slow' = N</td><td>Your decimated pages are shorter than the coarse stage's window. Lower <span class="k">how slow</span> or re-run <span class="k">Scan input</span>.</td></tr>
+<tr><td>No trained model at '...'</td><td>No checkpoint exists yet at that path — train first.</td></tr>
+<tr><td>"conditioning differs — starting fresh"</td><td>You asked to resume, but the saved checkpoint's slow-phase setting doesn't match the current form, so a fresh model was started instead.</td></tr>
+<tr><td>SYNTHETIC FALLBACK in the status box</td><td>No CSV/Parquet files were found in the given folder, so synthetic toy data was used instead — check the folder path.</td></tr>
+</table>
+
+<h2 id="glossary">Glossary</h2>
+<table>
+<tr><td>Idealisation</td><td>The discrete channel-state sequence (how many channels are open at each sample), as opposed to the noisy continuous current.</td></tr>
+<tr><td>Envelope</td><td>The slow-moving amplitude trend underlying the fast noisy detail in a current trace.</td></tr>
+<tr><td>Coarse / fine stage</td><td>The two steps of the slow-phase cascade: coarse models the envelope, fine models the detail on top of it.</td></tr>
+<tr><td>eps-MSE</td><td>Mean squared error between the true and predicted noise at each diffusion step — the training loss.</td></tr>
+<tr><td>MMD</td><td>Maximum Mean Discrepancy — a distributional distance between real and generated samples, printed to the terminal during training.</td></tr>
+<tr><td>Decimation</td><td>Downsampling by averaging (or by keeping every Nth point) to produce a coarser, shorter view of a trace.</td></tr>
+</table>
+
+<footer>Help page for <code>diffusion_app.py</code>. Generated to match the app as of the current script — if you change the sliders or add panels, this page won't update itself.</footer>
+
+</main>
+</div>
+
+<script>
+  // highlight the active section in the sidebar as you scroll
+  const links = document.querySelectorAll('nav a');
+  const sections = [...links].map(l => document.querySelector(l.getAttribute('href')));
+  const setActive = () => {
+    let current = sections[0];
+    for (const s of sections){
+      if (s && s.getBoundingClientRect().top - 80 <= 0) current = s;
+    }
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + (current ? current.id : '')));
+  };
+  document.addEventListener('scroll', setActive, {passive:true});
+  setActive();
+</script>
+</body>
+</html>

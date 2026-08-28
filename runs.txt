@@ -1,0 +1,544 @@
+This PC is WIN1064-1036593
+Date is 2021-08-11 22:32:26.552941
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb']
+Wasserstein was used? True
+BATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-12 16:49:30.881370
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-12 17:27:36.119530
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-12 17:28:05.208150
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-12 17:30:24.511788
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-12 17:40:59.764072
+TF= 2.0.0
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 2048, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-13 10:54:09.117343
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-13 11:18:12.109195
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? True
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-13 23:00:07.448201
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-14 09:14:09.949983
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-14 11:33:16.091394
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.1
+
+This PC is WIN1064-1036593
+Date is 2021-08-14 17:46:31.796558
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0
+
+This PC is WIN1064-1036593
+Date is 2021-08-15 10:16:17.835185
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 20
+
+This PC is WIN1064-1036593
+Date is 2021-08-15 13:19:28.077987
+TF= 2.0.0
+Data is in folder PYRdata
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-16 11:33:53.406115
+TF= 2.0.0
+Data is in folder SamData
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-08-16 11:43:07.134624
+TF= 2.0.0
+Data is in folder SamData
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-10 18:46:22.861174
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-10 19:03:00.843300
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-10 19:33:21.824234
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-13 15:01:29.134481
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-13 21:37:53.132950
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-13 21:38:36.926504
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-09-14 07:59:57.921002
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0, THRESHOLD = 0.2
+
+This PC is WIN1064-1036593
+Date is 2021-10-01 11:11:49.179240
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is WIN1064-1036593
+Date is 2021-12-06 11:30:51.565582
+TF= 2.0.0
+Data is in folder Lina2
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.05
+This PC is MWS-1036593
+Date is 2026-08-09 16:21:45.214020
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is MWS-1036593
+Date is 2026-08-09 16:40:04.830089
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-09 16:41:04.200747
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-09 16:56:58.258260
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-09 18:31:30.258278
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-09 22:48:24.368625
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-10 12:30:17.105154
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-10 12:34:23.947073
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-10 12:34OUT_SCALE=1.5000 THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-10 12:53:29.986516
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-10 12:55:33.487139
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-10 12:59OUT_SCALE=[3.3091216 1.5      ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+2026-08-10 12:59OUT_SCALE=[3.3091216 1.5      ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+2026-08-10 13:00 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-10 13:53:01.100714
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-10 13:53 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-10 15:28:00.171871
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-10 15:28 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-10 17:45:22.366632
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 4096, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-10 17:46 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-11 09:00:56.613411
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 512, NOISE_AMP = 0.01, THRESHOLD = 0.03
+
+2026-08-11 09:01 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.03 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-11 13:45:15.532309
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-11 13:45 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-11 14:30:49.517455
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueBATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-11 14:31 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-11 14:40:18.649739
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.5BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is MWS-1036593
+Date is 2026-08-11 14:40:53.420272
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.5BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-11 14:41 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-11 17:04:21.340139
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 2.0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is MWS-1036593
+Date is 2026-08-11 17:19:19.198348
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 2.0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-11 17:19 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-12 07:16:24.997609
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 2.0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is MWS-1036593
+Date is 2026-08-12 09:02:56.516819
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 2.0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is MWS-1036593
+Date is 2026-08-12 09:09:19.737287
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 2.0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is MWS-1036593
+Date is 2026-08-12 09:59:59.768777
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 2.0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-12 10:00 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-12 10:01:52.250987
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-12 10:02 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-12 11:44:44.501744
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-12 11:44 OUT_SCALE=[3.3091 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-12 13:22:21.531417
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.5BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+This PC is MWS-1036593
+Date is 2026-08-12 15:44:40.088817
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.5BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.05
+
+2026-08-12 15:44 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.05 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-12 16:48:03.708784
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.5BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.02
+
+2026-08-12 16:48 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.02 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-12 21:40:57.452401
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.5BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-12 21:41 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-13 10:38:04.327886
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.5BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-13 10:38 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-13 16:27:26.125742
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 0.8BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-14 10:00:27.314862
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-15 16:49:11.606648
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-15 23:41:14.274241
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-15 23:41 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-16 14:55:30.138519
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-19 10:41:45.021128
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-23 09:33:53.953712
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-23 09:34 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-24 09:28:07.952406
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+This PC is MWS-1036593
+Date is 2026-08-24 10:24:56.459265
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-24 10:25 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn
+This PC is MWS-1036593
+Date is 2026-08-26 11:19:18.920399
+TF= 2.19.0
+Data is in folder pvn
+Script name: ['GAN_IDL_Channel_sim.ipynb', 'GetExtraMetrics.ipynb', 'GAN_IDL_Channel_sim - backup.ipynb']
+Wasserstein was used? False
+Adam used (SGD if false) TrueMS_WEIGHT is 10BATCH_SIZE = 100, WINDOW_SIZE = 512, LATENT_DIM = 128, NOISE_AMP = 0.01, THRESHOLD = 0.01
+
+2026-08-26 11:19 OUT_SCALE=[3.2736 1.5   ] THRESHOLD=0.01 DISC_TARGET=0.8 folder=pvn

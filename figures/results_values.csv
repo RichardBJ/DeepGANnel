@@ -1,0 +1,42 @@
+placeholder,value,note
+acf_description,ACF curves differ by an RMS of 0.132 over the first 10.0 ms of lag.,REPLACE with your own reading of Figure 3B
+acf_rmse,0.1325,RMS difference in ACF
+block_len,32768,
+burst_tc,1000,flicker threshold for the burst clock
+cluster_p,TO BE FILLED,run ClusterSignificance on manifold_coordinates.csv
+context_len,512,
+emb_dim,4,
+emb_drop,0.1,
+env_sd_cascade,6.502,
+env_sd_real,6.166,
+env_sd_single,NOT RUN,no single-stage ablation available
+filter_khz,1,
+ks_D,0.1857,"KS statistic, all-points amplitude, real vs generated"
+ks_seam,0.0204,"KS statistic, sample differences near vs away from block joins"
+long_len_s,10,
+manifold_description,REPLACE with your reading of Figure 7,describe the degree of overlap you actually see
+mmd_env_cascade,0.07015,
+mmd_env_single,NOT RUN,no single-stage ablation available
+mmd_gamma,7.025e-05,median-heuristic kernel bandwidth
+mmd_main,0.04588,
+mmd_perm_p,0.00498,"permutation p, real vs generated windows"
+mmd_white,0.07212,
+mmd_within_real,0.004824,
+modes_gen,8.11,"modal current, generated, pA"
+modes_real,8.23,"modal current, real, pA"
+n_blocks,4,
+n_records,1,seed records
+n_samples,"824,001",total seed samples
+n_seconds,41.2,seconds of seed data
+psd_description,Real and generated spectra agree to an RMS difference of 0.40 log10 units below the 1000 Hz filter corner.,REPLACE with your own reading of Figure 3A
+psd_log_rmse,0.397,RMS difference in log10 PSD below filter corner
+sample_khz,20,
+sd_gen,1.675,"closed-state SD, generated, pA"
+sd_real,1.579,"closed-state SD, real, pA"
+seq_len,128,
+seq_len_ms,6.4,training window duration
+slow_factor,64,
+tau_closed_recovered,4.438,
+tau_closed_true,8.176,
+tau_open_recovered,5.242,
+tau_open_true,10.14,

@@ -1,0 +1,1479 @@
+---
+title: "DiffuChannel: comparison of real and diffusion-generated single-channel records"
+author: "Barrett-Jolley lab"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+    theme: flatly
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width  = 7,
+  fig.height = 4.2,
+  dpi = 150
+)
+```
+
+# Purpose
+
+This notebook takes real (seed) patch-clamp records and DiffuChannel-generated records,
+computes every similarity metric reported in the manuscript, draws every figure, and writes
+a `results_values.csv` whose rows are keyed to the `[[placeholder]]` names used in the
+manuscript draft. Fill the manuscript from that file rather than from the console.
+
+Nothing here assumes a particular result. If the model has not learned the noise structure,
+the plots will say so.
+
+# Packages
+
+```{r packages}
+required <- c("dplyr", "tidyr", "ggplot2", "readr", "purrr", "arrow",
+              "scales", "patchwork", "uwot", "Rtsne")
+
+# Optional: only used for the file dialogs. rstudioapi ships with RStudio and
+# tcltk with base R on most builds, so this normally needs nothing installed.
+if (!any(vapply(c("rstudioapi", "tcltk"), requireNamespace,
+                logical(1), quietly = TRUE))) {
+  message("Neither rstudioapi nor tcltk is available, so file dialogs will ",
+          "fall back to file.choose(). Set the paths in CFG to avoid prompts.")
+}
+
+missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
+if (length(missing)) {
+  message("Install these before running: ", paste(missing, collapse = ", "))
+  message('install.packages(c("', paste(missing, collapse = '", "'), '"))')
+}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(purrr)
+library(arrow)
+library(patchwork)
+
+set.seed(42)
+```
+
+# Configuration
+
+Everything you need to change lives in this block.
+
+```{r config}
+CFG <- list(
+
+  # ---- where the data are -------------------------------------------------
+  real_dir       = "./pages",   # folder of seed CSV / Parquet. Always a folder.
+
+  # The two generated records are picked with file dialogs on first run and the
+  # choice is remembered afterwards. Options for each:
+  #   NA      prompt with a dialog (cancel to skip that arm)
+  #   "path"  use that file, no dialog
+  #   FALSE   skip that arm entirely, no dialog
+  gen_file        = NA,      # DDPM / DiffuChannel output
+  gan_file        = NA,      # DeepGANnel output, optional
+  gen_single_file = FALSE,   # single-stage ablation, optional
+
+  reset_file_choices = FALSE, # TRUE forgets remembered paths and asks again
+  filter_dialogs = TRUE,      # FALSE shows every file in the chooser
+
+  # Meta-analysis. Each run of this notebook writes one tidy file into runs_dir;
+  # DiffuChannel_meta.Rmd reads every file in that folder. run_id must be unique
+  # per seed record or runs will overwrite one another. NA derives it from the
+  # seed folder name.
+  run_id         = NA,
+  runs_dir       = "./runs",
+
+  out_dir        = "./figures",
+
+  # ---- recording parameters ----------------------------------------------
+  sample_hz      = 1e4,     # acquisition rate, Hz. Must match SAMPLE_DT in diffusion_app.py
+  filter_hz      = 1e3,     # anti-alias / Bessel corner frequency, Hz
+
+  # ---- must match how the model was trained -------------------------------
+  seq_len        = 128,     # training window, samples
+  slow_factor    = 64,      # decimation factor of the coarse stage
+  context_len    = 512,     # carried context at block joins
+  block_len      = 32768,   # generation block length
+  burst_tc       = 1000,    # BURST_TC in diffusion_app.py: flicker threshold, samples
+  emb_dim        = 4,       # per-record embedding width used by the coarse stage
+  emb_drop       = 0.1,     # embedding dropout during coarse training
+
+  # ---- analysis knobs ------------------------------------------------------
+  n_windows_mmd  = 400,     # windows per group for MMD. O(n^2): keep modest
+  n_windows_proj = 600,     # windows per group for UMAP / t-SNE
+  proj_win       = 512,     # window length for manifold projections
+  psd_seg        = 1024,    # Welch segment length
+  acf_lag_max    = 200,     # autocorrelation lag, samples
+  ks_subsample   = 2e5,     # cap for KS tests (ks.test is slow on millions)
+
+  # ---- plotting ------------------------------------------------------------
+  trace_secs     = 0.5,     # duration of example traces to plot
+  base_size      = 10
+)
+
+dir.create(CFG$out_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Results are collected here and written out at the end.
+RESULTS <- new.env(parent = emptyenv())
+RESULTS$rows <- list()
+
+record_value <- function(key, value, note = "") {
+  RESULTS$rows[[key]] <- tibble::tibble(
+    placeholder = key,
+    value       = if (is.numeric(value)) format(value, digits = 4) else as.character(value),
+    note        = note
+  )
+  invisible(value)
+}
+```
+
+# Theme
+
+A plain publication theme. No decoration that a reviewer will ask you to remove.
+
+```{r theme}
+theme_channel <- function(base_size = CFG$base_size) {
+  theme_classic(base_size = base_size) +
+    theme(
+      strip.background = element_blank(),
+      strip.text       = element_text(face = "bold", hjust = 0),
+      legend.position  = "top",
+      legend.title     = element_blank(),
+      legend.key.size  = unit(0.8, "lines"),
+      plot.title       = element_text(face = "bold", size = base_size + 1),
+      axis.text        = element_text(colour = "black")
+    )
+}
+
+pal_source <- c(
+  "Real"          = "#1b1b1b",
+  "Generated"     = "#c0392b",
+  "Single-stage"  = "#2980b9",
+  "GAN"           = "#8e44ad",
+  "White noise"   = "#7f8c8d"
+)
+
+save_fig <- function(plot, name, width = 7, height = 4.2) {
+  ggsave(file.path(CFG$out_dir, paste0(name, ".pdf")), plot,
+         width = width, height = height)
+  ggsave(file.path(CFG$out_dir, paste0(name, ".png")), plot,
+         width = width, height = height, dpi = 300)
+  invisible(plot)
+}
+```
+
+# Helper functions
+
+## Reading records
+
+Handles both the tidy column names and whatever the acquisition software produced.
+
+```{r fn-read}
+normalise_names <- function(nms) {
+  gsub("[_-]", " ", trimws(tolower(nms)))
+}
+
+read_record <- function(path) {
+  df <- if (grepl("\\.parquet$", path, ignore.case = TRUE)) {
+    as.data.frame(arrow::read_parquet(path))
+  } else {
+    as.data.frame(readr::read_csv(path, show_col_types = FALSE))
+  }
+
+  nn  <- normalise_names(names(df))
+  idx <- function(target) {
+    hit <- which(nn %in% target)
+    if (length(hit)) hit[1] else NA_integer_
+  }
+
+  i_chan <- idx(c("channels", "channel", "ideal", "idealisation", "idealization"))
+  i_cur  <- idx(c("noisy current", "current", "raw", "raw current", "i"))
+  i_time <- idx(c("time", "t"))
+
+  if (is.na(i_chan) || is.na(i_cur)) {
+    stop("Could not find Channels / Noisy Current columns in ", basename(path),
+         ". Found: ", paste(names(df), collapse = ", "))
+  }
+
+  out <- tibble::tibble(
+    channels = as.numeric(df[[i_chan]]),
+    current  = as.numeric(df[[i_cur]])
+  )
+  out$time <- if (!is.na(i_time)) as.numeric(df[[i_time]]) else
+    (seq_len(nrow(out)) - 1) / CFG$sample_hz
+
+  out |>
+    dplyr::filter(is.finite(channels), is.finite(current)) |>
+    dplyr::select(time, channels, current)
+}
+
+# Sample rate taken from the file's own Time column rather than from CFG. The
+# app's export "Decimation factor" multiplies the Time step, so a generated
+# file can sit at a different rate from the seed data, and PSD, ACF and dwell
+# times are all silently wrong if that goes unnoticed.
+fs_of <- function(d, fallback = CFG$sample_hz) {
+  if (nrow(d) < 3) return(fallback)
+  dt <- stats::median(diff(d$time), na.rm = TRUE)
+  if (!is.finite(dt) || dt <= 0) return(fallback)
+  1 / dt
+}
+
+# ---- picking the generated files ------------------------------------------
+# Dialogs are convenient interactively and useless when knitting, because Knit
+# runs in a separate non-interactive session where no dialog can appear. So the
+# choice is made once, remembered in a small file next to the figures, and
+# reused on every subsequent knit. Delete that file, or set
+# CFG$reset_file_choices = TRUE, to be asked again.
+
+CHOICE_CACHE <- file.path(CFG$out_dir, "chosen_files.rds")
+if (isTRUE(CFG$reset_file_choices) && file.exists(CHOICE_CACHE)) {
+  unlink(CHOICE_CACHE)
+  message("Forgot the remembered file choices.")
+}
+
+read_choices <- function() {
+  if (!file.exists(CHOICE_CACHE)) return(list())
+  tryCatch(readRDS(CHOICE_CACHE), error = function(e) list())
+}
+
+# File-type filters are the usual reason a chooser opens on an empty folder, so
+# they are built carefully here and can be switched off with CFG$filter_dialogs.
+#
+# tk_choose.files groups its filter matrix by DESCRIPTION, collecting every
+# extension that shares a label. So several extensions need one row each with
+# the label repeated -- "{.csv .parquet}" in a single row is passed through as
+# one literal extension and matches nothing at all. Uppercase variants are
+# listed separately because Tcl's matching is case sensitive on some platforms.
+tk_filters <- function() {
+  matrix(c("Records",   ".csv",
+           "Records",   ".parquet",
+           "Records",   ".CSV",
+           "Records",   ".PARQUET",
+           "All files", "*"),
+         ncol = 2, byrow = TRUE)
+}
+
+choose_one <- function(prompt) {
+  if (!interactive()) return(NA_character_)
+  use_filter <- !isFALSE(CFG$filter_dialogs)
+  pick <- NULL
+
+  if (requireNamespace("rstudioapi", quietly = TRUE) &&
+      isTRUE(tryCatch(rstudioapi::isAvailable(), error = function(e) FALSE))) {
+    # RStudio expects "Label (pattern)" with patterns separated by spaces, not
+    # semicolons. A wrong pattern here hides every file rather than erroring.
+    filt <- if (use_filter) "Records (*.csv *.parquet)" else "All Files (*)"
+    pick <- tryCatch(
+      rstudioapi::selectFile(caption = prompt, existing = TRUE, filter = filt),
+      error = function(e) NULL)
+    # If the filter hid everything, offer the unfiltered dialog rather than
+    # leaving the user staring at an empty folder.
+    if (use_filter && (is.null(pick) || !length(pick) || is.na(pick[1]))) {
+      pick <- tryCatch(
+        rstudioapi::selectFile(caption = paste0(prompt, " (all files)"),
+                               existing = TRUE, filter = "All Files (*)"),
+        error = function(e) NULL)
+    }
+
+  } else if (requireNamespace("tcltk", quietly = TRUE)) {
+    pick <- tryCatch(
+      if (use_filter) {
+        tcltk::tk_choose.files(caption = prompt, multi = FALSE,
+                               filters = tk_filters())
+      } else {
+        tcltk::tk_choose.files(caption = prompt, multi = FALSE)
+      },
+      error = function(e) NULL)
+    if (use_filter && (is.null(pick) || !length(pick) || is.na(pick[1]) ||
+                       !nzchar(pick[1]))) {
+      pick <- tryCatch(
+        tcltk::tk_choose.files(caption = paste0(prompt, " (all files)"),
+                               multi = FALSE),
+        error = function(e) NULL)
+    }
+
+  } else {
+    message(prompt, "  (cancel to skip)")
+    pick <- tryCatch(file.choose(), error = function(e) NULL)
+  }
+
+  if (is.null(pick) || !length(pick) || is.na(pick[1]) || !nzchar(pick[1])) {
+    NA_character_
+  } else {
+    pick[1]
+  }
+}
+
+pick_dataset <- function(key, prompt, cfg_value) {
+  if (isFALSE(cfg_value)) return(NA_character_)
+
+  if (is.character(cfg_value) && length(cfg_value) == 1 && nzchar(cfg_value)) {
+    if (file.exists(cfg_value)) return(cfg_value)
+    warning("CFG path for ", key, " does not exist: ", cfg_value,
+            ". Falling back to a dialog.")
+  }
+
+  ch <- read_choices()
+  if (!is.null(ch[[key]]) && file.exists(ch[[key]])) {
+    message("Using remembered ", key, ": ", basename(ch[[key]]))
+    return(ch[[key]])
+  }
+
+  path <- choose_one(prompt)
+  if (is.na(path)) {
+    message(if (interactive()) "Cancelled: " else "No remembered choice and no dialog available: ",
+            key, ". That arm will be skipped.")
+    return(NA_character_)
+  }
+  ch[[key]] <- path
+  try(saveRDS(ch, CHOICE_CACHE), silent = TRUE)
+  message("Remembered ", key, ": ", basename(path))
+  path
+}
+
+read_folder <- function(dir) {
+  files <- list.files(dir, pattern = "\\.(csv|parquet)$", full.names = TRUE,
+                      ignore.case = TRUE) |> sort()
+
+  # A GAN output living alongside the seed data would otherwise be loaded as
+  # though it were seed data, quietly contaminating every "Real" statistic.
+  gan_like <- grepl("_GAN\\.(csv|parquet)$", files, ignore.case = TRUE)
+  if (any(gan_like)) {
+    message("Ignoring ", sum(gan_like), " *_GAN file(s) in ", dir,
+            " when loading seed records.")
+    files <- files[!gan_like]
+  }
+
+  if (!length(files)) stop("No CSV or Parquet files found in ", dir)
+
+  purrr::map(files, ~ dplyr::mutate(read_record(.x), record = basename(.x)))
+}
+```
+
+## Windowing and MMD
+
+The MMD estimator here deliberately mirrors the Python implementation in
+`diffusion_103.py` (biased V-statistic, Gaussian kernel, bandwidth `gamma = 1 / L`)
+so that the numbers in the notebook and the numbers printed during training are on
+the same scale.
+
+```{r fn-mmd}
+make_windows <- function(x, win, n_max = Inf, stride = NULL) {
+  n <- length(x)
+  if (n < win) return(matrix(numeric(0), nrow = 0, ncol = win))
+  if (is.null(stride)) {
+    stride <- max(1L, floor((n - win) / max(1L, min(n_max, n))))
+  }
+  starts <- seq(1L, n - win + 1L, by = stride)
+  if (length(starts) > n_max) starts <- sample(starts, n_max)
+  t(vapply(starts, function(s) x[s:(s + win - 1L)], numeric(win)))
+}
+
+sq_dists <- function(A, B) {
+  aa <- rowSums(A^2)
+  bb <- rowSums(B^2)
+  d  <- outer(aa, bb, "+") - 2 * tcrossprod(A, B)
+  pmax(d, 0)
+}
+
+# Bandwidth by the median heuristic: gamma = 1 / median pairwise squared
+# distance, so that a typical pair sits where the kernel actually varies.
+# This matters more than it sounds. The fixed gamma = 1/L used in
+# diffusion_103.py is right for standardised windows but far too narrow for
+# current in pA: on a record with a 7 pA standard deviation, gamma * median(d2)
+# comes out around 100, every kernel evaluation underflows to zero, and the
+# statistic collapses onto its finite-sample floor of 1/m + 1/n regardless of
+# what the two samples actually contain.
+median_gamma <- function(X, Y, n_sub = 200) {
+  A <- X[sample(nrow(X), min(n_sub, nrow(X))), , drop = FALSE]
+  B <- Y[sample(nrow(Y), min(n_sub, nrow(Y))), , drop = FALSE]
+  m <- stats::median(sq_dists(A, B))
+  if (!is.finite(m) || m <= 0) 1 / ncol(X) else 1 / m
+}
+
+# unbiased = TRUE drops the i == j diagonal (the U-statistic). The diagonal
+# terms are all exactly 1 and contribute (1/m + 1/n) of pure bias to the
+# V-statistic, which is what puts a floor under the biased version.
+mmd_rbf <- function(X, Y, gamma = NULL, unbiased = TRUE) {
+  m <- nrow(X); n <- nrow(Y)
+  if (m < 2 || n < 2) return(NA_real_)
+  if (is.null(gamma)) gamma <- median_gamma(X, Y)
+
+  Kxx <- exp(-gamma * sq_dists(X, X))
+  Kyy <- exp(-gamma * sq_dists(Y, Y))
+  Kxy <- exp(-gamma * sq_dists(X, Y))
+
+  if (unbiased) {
+    (sum(Kxx) - sum(diag(Kxx))) / (m * (m - 1)) +
+      (sum(Kyy) - sum(diag(Kyy))) / (n * (n - 1)) -
+      2 * mean(Kxy)
+  } else {
+    mean(Kxx) + mean(Kyy) - 2 * mean(Kxy)
+  }
+}
+
+# Permutation test: pool the two sets, reshuffle the labels, and see where the
+# observed statistic falls in the null it generates. This answers the question
+# the raw number cannot -- given that two draws from one stochastic process are
+# never identical, is this difference larger than relabelling would produce?
+mmd_permutation_p <- function(X, Y, n_perm = 200, gamma = NULL) {
+  if (is.null(gamma)) gamma <- median_gamma(X, Y)
+  obs <- mmd_rbf(X, Y, gamma)
+  Z <- rbind(X, Y); m <- nrow(X)
+  null <- replicate(n_perm, {
+    i <- sample(nrow(Z))
+    mmd_rbf(Z[i[seq_len(m)], , drop = FALSE],
+            Z[i[-seq_len(m)], , drop = FALSE], gamma)
+  })
+  list(mmd = obs, p = (1 + sum(null >= obs)) / (n_perm + 1),
+       null_mean = mean(null), null_sd = sd(null), gamma = gamma)
+}
+```
+
+## Welch power spectral density
+
+Written out rather than pulled from a package, so that the estimate is transparent
+and the notebook has one fewer dependency.
+
+```{r fn-psd}
+welch_psd <- function(x, fs, nperseg = 1024, noverlap = NULL, detrend = TRUE) {
+  x <- as.numeric(x[is.finite(x)])
+  if (length(x) < nperseg) return(NULL)
+  if (is.null(noverlap)) noverlap <- nperseg %/% 2
+
+  step   <- nperseg - noverlap
+  starts <- seq(1L, length(x) - nperseg + 1L, by = step)
+  w      <- 0.5 - 0.5 * cos(2 * pi * (seq_len(nperseg) - 1) / (nperseg - 1))  # Hann
+  U      <- sum(w^2)
+
+  acc <- numeric(nperseg %/% 2 + 1)
+  for (s in starts) {
+    seg <- x[s:(s + nperseg - 1L)]
+    if (detrend) seg <- seg - mean(seg)
+    X <- stats::fft(seg * w)[seq_len(nperseg %/% 2 + 1)]
+    acc <- acc + (Mod(X)^2) / (fs * U)
+  }
+  psd <- acc / length(starts)
+  psd[-c(1, length(psd))] <- 2 * psd[-c(1, length(psd))]  # one-sided
+
+  tibble::tibble(
+    freq = seq(0, fs / 2, length.out = length(psd)),
+    psd  = psd
+  ) |> dplyr::filter(freq > 0)
+}
+```
+
+## Dwell times and a simple idealiser
+
+The half-amplitude threshold criterion is the classical approach and is what we use
+to re-idealise the *generated* current in Section 6, so that the missed-event losses
+reported there are the ones a conventional analysis would actually incur.
+
+```{r fn-dwell}
+dwell_times <- function(ideal, fs) {
+  r <- rle(as.integer(round(ideal)))
+  tibble::tibble(
+    level    = r$values,
+    n_sample = r$lengths,
+    dwell_ms = 1000 * r$lengths / fs
+  ) |>
+    dplyr::filter(n_sample > 0) |>
+    dplyr::mutate(state = ifelse(level == 0, "Closed", "Open"))
+}
+
+# Half-amplitude threshold idealiser. Levels are estimated from the amplitude
+# histogram of the closed baseline and the mode of the open population.
+# The original mad()-based amplitude estimate is fragile on a strongly bimodal
+# record: if it fails it returns all-NA, and rle() then reports one "dwell" per
+# sample, which is what silently destroyed the ground-truth check on the first
+# run. Levels are now taken from the two largest peaks of the amplitude density,
+# which is what an experimenter reads off the all-points histogram anyway, and
+# the baseline is taken from the closed population rather than the global median.
+idealise_half_amplitude <- function(current, unit_pA = NULL, baseline = NULL,
+                                    n_levels = 1) {
+  d <- density(current, n = 4096)
+
+  # Local maxima of the density, strongest first.
+  is_peak <- c(FALSE, diff(sign(diff(d$y))) == -2, FALSE)
+  pk <- data.frame(x = d$x[is_peak], y = d$y[is_peak])
+  pk <- pk[order(-pk$y), , drop = FALSE]
+
+  if (is.null(baseline)) baseline <- if (nrow(pk)) pk$x[1] else median(current)
+
+  if (is.null(unit_pA)) {
+    # The open level is the strongest peak that is not the baseline peak.
+    far <- pk[abs(pk$x - baseline) > 0.5 * sd(current), , drop = FALSE]
+    unit_pA <- if (nrow(far)) far$x[1] - baseline else NA_real_
+  }
+
+  if (!is.finite(unit_pA) || abs(unit_pA) < .Machine$double.eps^0.5) {
+    warning("Could not estimate the unitary amplitude from the density. ",
+            "Pass unit_pA (and baseline) explicitly: read them off Figure 2E.")
+    return(rep(NA_integer_, length(current)))
+  }
+
+  lvl <- (current - baseline) / unit_pA
+  pmin(pmax(as.integer(round(lvl)), 0L), as.integer(n_levels))
+}
+
+block_mean <- function(x, factor) {
+  factor <- max(1L, as.integer(factor))
+  nb <- length(x) %/% factor
+  if (nb < 1) return(mean(x))
+  colMeans(matrix(x[seq_len(nb * factor)], nrow = factor))
+}
+```
+
+## Subsampled KS test
+
+```{r fn-ks}
+ks_safe <- function(a, b, n_max = CFG$ks_subsample) {
+  a <- a[is.finite(a)]; b <- b[is.finite(b)]
+  if (length(a) > n_max) a <- sample(a, n_max)
+  if (length(b) > n_max) b <- sample(b, n_max)
+  suppressWarnings(stats::ks.test(a, b))
+}
+```
+
+---
+
+# 1. Load the data
+
+```{r load}
+real_list  <- read_folder(CFG$real_dir)
+real       <- dplyr::bind_rows(real_list)
+real_paths <- normalizePath(
+  list.files(CFG$real_dir, pattern = "\\.(csv|parquet)$", full.names = TRUE,
+             ignore.case = TRUE),
+  winslash = "/", mustWork = FALSE)
+
+gen_path    <- pick_dataset("ddpm",   "Choose the DDPM (DiffuChannel) record",
+                            CFG$gen_file)
+gan_path    <- pick_dataset("gan",    "Choose the GAN (DeepGANnel) record, or cancel",
+                            CFG$gan_file)
+single_path <- pick_dataset("single", "Choose the single-stage ablation record, or cancel",
+                            CFG$gen_single_file)
+
+# A generated file that also sits in the seed folder would be counted as real
+# data as well as synthetic, which corrupts every "Real" statistic including
+# the within-real MMD baseline that everything else is judged against.
+warn_if_seed <- function(path, label) {
+  if (is.na(path)) return(invisible(NULL))
+  if (normalizePath(path, winslash = "/", mustWork = FALSE) %in% real_paths) {
+    warning(label, " (", basename(path), ") is inside CFG$real_dir and is ",
+            "therefore also being loaded as a seed record. Move it out.")
+  }
+}
+warn_if_seed(gen_path, "The DDPM record")
+warn_if_seed(gan_path, "The GAN record")
+warn_if_seed(single_path, "The single-stage record")
+
+if (is.na(gen_path)) {
+  stop("No DDPM record chosen. The whole notebook is built around that file, ",
+       "so there is nothing to analyse without it. Re-run and pick one, or set ",
+       "CFG$gen_file to a path. (A GAN-only run is not supported: every figure ",
+       "and table would be labelled 'Generated' while showing GAN output, which ",
+       "is exactly the sort of mislabelling that ends up in a paper.)")
+}
+
+gen <- read_record(gen_path)
+gen$record <- "generated"
+
+has_single <- !is.na(single_path)
+gen_single <- if (has_single) {
+  x <- read_record(single_path); x$record <- "single-stage"; x
+} else {
+  message("No single-stage record. Ablation sections will be skipped.")
+  NULL
+}
+
+has_gan <- !is.na(gan_path)
+gan <- if (has_gan) {
+  x <- read_record(gan_path); x$record <- "GAN"; x
+} else {
+  message("No GAN record. Comparison sections will be skipped.")
+  NULL
+}
+
+FS_REAL <- fs_of(real_list[[1]])
+FS_GEN  <- fs_of(gen)
+FS_SING <- if (has_single) fs_of(gen_single) else NA_real_
+FS_GAN  <- if (has_gan)    fs_of(gan)         else NA_real_
+
+cat(sprintf("Sample rate  real %.1f Hz | generated %.1f Hz\n", FS_REAL, FS_GEN))
+cat(sprintf("Real:      %d record(s), %s samples (%.1f s)\n",
+            length(real_list), format(nrow(real), big.mark = ","),
+            nrow(real) / FS_REAL))
+cat(sprintf("DDPM:      %s samples (%.1f s) from %s\n",
+            format(nrow(gen), big.mark = ","), nrow(gen) / FS_GEN,
+            basename(gen_path)))
+if (has_gan) {
+  cat(sprintf("GAN:       %s samples (%.1f s) from %s\n",
+              format(nrow(gan), big.mark = ","), nrow(gan) / FS_GAN,
+              basename(gan_path)))
+}
+record_value("gan_included", if (has_gan) "yes" else "no",
+             "DeepGANnel comparison arm present")
+
+if (abs(FS_REAL - FS_GEN) / FS_REAL > 0.01) {
+  warning(sprintf(paste("Real and generated sample rates differ (%.1f vs %.1f Hz).",
+                        "Almost certainly the export Decimation factor was > 1.",
+                        "Per-file rates are used throughout, but a generated record",
+                        "coarser than the seed data cannot reproduce its high-frequency",
+                        "noise and the PSD comparison will be truncated."),
+                  FS_REAL, FS_GEN))
+}
+
+record_value("n_records",  length(real_list), "seed records")
+record_value("n_samples",  format(nrow(real), big.mark = ","), "total seed samples")
+record_value("n_seconds",  round(nrow(real) / FS_REAL, 1), "seconds of seed data")
+record_value("sample_khz", FS_REAL / 1000)
+record_value("filter_khz", CFG$filter_hz / 1000)
+record_value("seq_len",    CFG$seq_len)
+record_value("slow_factor", CFG$slow_factor)
+record_value("context_len", CFG$context_len)
+record_value("block_len",   CFG$block_len)
+record_value("burst_tc",    CFG$burst_tc, "flicker threshold for the burst clock")
+record_value("emb_dim",     CFG$emb_dim)
+record_value("emb_drop",    CFG$emb_drop)
+record_value("seq_len_ms",  round(1000 * CFG$seq_len / FS_REAL, 2),
+             "training window duration")
+record_value("long_len_s",  round(nrow(gen) / FS_GEN, 1))
+record_value("n_blocks",    max(1, ceiling(nrow(gen) /
+                              (CFG$block_len - CFG$context_len))))
+```
+
+## Table 1: seed data summary
+
+```{r table1}
+table1 <- purrr::map_dfr(real_list, function(d) {
+  tibble::tibble(
+    Record       = d$record[1],
+    Samples      = nrow(d),
+    `Duration (s)` = round(nrow(d) / FS_REAL, 2),
+    `Max levels` = max(d$channels, na.rm = TRUE),
+    `Open prob.` = round(mean(d$channels > 0), 4),
+    `Mean (pA)`  = round(mean(d$current), 3),
+    `SD (pA)`    = round(sd(d$current), 3)
+  )
+})
+
+knitr::kable(table1, caption = "Table 1. Seed records used for training and evaluation.")
+readr::write_csv(table1, file.path(CFG$out_dir, "table1_seed_data.csv"))
+```
+
+# 2. Figure 2: traces and amplitude distribution
+
+## 2B–D: example traces
+
+```{r fig2-traces, fig.height = 6}
+n_show_real <- round(CFG$trace_secs * FS_REAL)
+n_show_gen  <- round(CFG$trace_secs * FS_GEN)
+
+trace_df <- dplyr::bind_rows(
+  real |> dplyr::slice_head(n = n_show_real) |>
+    dplyr::select(time, channels, current) |> dplyr::mutate(source = "Real"),
+  gen  |> dplyr::slice_head(n = n_show_gen) |>
+    dplyr::select(time, channels, current) |> dplyr::mutate(source = "Generated"),
+  if (has_gan) {
+    gan |> dplyr::slice_head(n = round(CFG$trace_secs * FS_GAN)) |>
+      dplyr::select(time, channels, current) |> dplyr::mutate(source = "GAN")
+  }
+) |>
+  dplyr::mutate(
+    time_ms = 1000 * (time - min(time)),
+    source  = factor(source, levels = c("Real", "Generated", "GAN"))
+  ) |>
+  tidyr::pivot_longer(c(channels, current), names_to = "signal", values_to = "value") |>
+  dplyr::mutate(signal = factor(
+    signal, levels = c("channels", "current"),
+    labels = c("Idealisation", "Current (pA)")
+  ))
+
+p_traces <- ggplot(trace_df, aes(time_ms, value, colour = source)) +
+  geom_line(linewidth = 0.25) +
+  facet_grid(signal ~ source, scales = "free_y", switch = "y") +
+  scale_colour_manual(values = pal_source, guide = "none") +
+  labs(x = "Time (ms)", y = NULL) +
+  theme_channel() +
+  theme(strip.placement = "outside")
+
+p_traces
+save_fig(p_traces, "fig2_traces", height = 5)
+```
+
+## 2E: all-points amplitude histograms
+
+```{r fig2-hist}
+amp_df <- dplyr::bind_rows(
+  tibble::tibble(current = real$current, source = "Real"),
+  tibble::tibble(current = gen$current,  source = "Generated"),
+  if (has_gan) tibble::tibble(current = gan$current, source = "GAN")
+) |>
+  dplyr::mutate(source = factor(source, levels = c("Real", "Generated", "GAN")))
+
+p_amp <- ggplot(amp_df, aes(current, colour = source, fill = source)) +
+  geom_density(alpha = 0.18, linewidth = 0.6, adjust = 0.6) +
+  scale_colour_manual(values = pal_source) +
+  scale_fill_manual(values = pal_source) +
+  labs(x = "Current (pA)", y = "Density") +
+  theme_channel()
+
+p_amp
+save_fig(p_amp, "fig2E_amplitude_histogram")
+
+# Modes and dispersion
+mode_of <- function(x) { d <- density(x, n = 4096); d$x[which.max(d$y)] }
+
+closed_real <- real$current[real$channels == 0]
+closed_gen  <- gen$current[gen$channels == 0]
+
+record_value("modes_real", round(mode_of(real$current), 3), "modal current, real, pA")
+record_value("modes_gen",  round(mode_of(gen$current), 3),  "modal current, generated, pA")
+record_value("sd_real",    round(sd(closed_real), 4), "closed-state SD, real, pA")
+record_value("sd_gen",     round(sd(closed_gen), 4),  "closed-state SD, generated, pA")
+
+ks_amp <- ks_safe(real$current, gen$current)
+record_value("ks_D", round(unname(ks_amp$statistic), 4),
+             "KS statistic, all-points amplitude, real vs generated")
+ks_amp
+
+if (has_gan) {
+  closed_gan <- gan$current[gan$channels == 0]
+  ks_gan <- ks_safe(real$current, gan$current)
+  record_value("ks_D_gan", round(unname(ks_gan$statistic), 4),
+               "KS statistic, all-points amplitude, real vs GAN")
+  record_value("modes_gan", round(mode_of(gan$current), 3), "modal current, GAN, pA")
+  record_value("sd_gan", round(sd(closed_gan), 4), "closed-state SD, GAN, pA")
+  print(ks_gan)
+}
+```
+
+# 3. Maximum mean discrepancy
+
+Three numbers, and the first is meaningless without the other two. The within-real value
+is the floor from finite sampling; the white-noise value is what a naive noise model scores.
+
+```{r mmd}
+W_real <- make_windows(real$current, CFG$seq_len, CFG$n_windows_mmd)
+W_gen  <- make_windows(gen$current,  CFG$seq_len, CFG$n_windows_mmd)
+
+half   <- floor(nrow(real) / 2)
+W_r1   <- make_windows(real$current[1:half],              CFG$seq_len, CFG$n_windows_mmd)
+W_r2   <- make_windows(real$current[(half + 1):nrow(real)], CFG$seq_len, CFG$n_windows_mmd)
+
+white  <- rnorm(nrow(real), mean(real$current), sd(real$current))
+W_white <- make_windows(white, CFG$seq_len, CFG$n_windows_mmd)
+
+# All three share one bandwidth, taken from the real-vs-generated comparison,
+# so the numbers can be read against each other.
+g0 <- median_gamma(W_real, W_gen)
+mmd_main        <- mmd_rbf(W_real, W_gen,   gamma = g0)
+mmd_within_real <- mmd_rbf(W_r1,   W_r2,    gamma = g0)
+mmd_white       <- mmd_rbf(W_real, W_white, gamma = g0)
+
+mmd_tbl <- tibble::tibble(
+  Comparison = c("Real vs generated", "Real vs real (split half)",
+                 "Real vs Gaussian white noise"),
+  MMD        = c(mmd_main, mmd_within_real, mmd_white)
+)
+
+if (has_single) {
+  W_gs <- make_windows(gen_single$current, CFG$seq_len, CFG$n_windows_mmd)
+  mmd_tbl <- dplyr::bind_rows(
+    mmd_tbl,
+    tibble::tibble(Comparison = "Real vs single-stage", MMD = mmd_rbf(W_real, W_gs, gamma = g0))
+  )
+}
+
+if (has_gan) {
+  W_gan <- make_windows(gan$current, CFG$seq_len, CFG$n_windows_mmd)
+  mmd_gan <- mmd_rbf(W_real, W_gan, gamma = g0)
+  mmd_tbl <- dplyr::bind_rows(
+    mmd_tbl,
+    tibble::tibble(Comparison = "Real vs GAN (DeepGANnel)", MMD = mmd_gan)
+  )
+  record_value("mmd_gan", signif(mmd_gan, 4), "MMD, real vs DeepGANnel")
+}
+
+# One bandwidth for every comparison, or the numbers are not on one scale.
+GAMMA <- median_gamma(W_real, W_gen)
+cat(sprintf("Median-heuristic gamma = %.3e (fixed 1/L would be %.3e)\n",
+            GAMMA, 1 / CFG$seq_len))
+
+mmd_tbl$`MMD (gamma = 1/L, biased)` <- c(
+  mmd_rbf(W_real, W_gen,  gamma = 1 / CFG$seq_len, unbiased = FALSE),
+  mmd_rbf(W_r1,   W_r2,   gamma = 1 / CFG$seq_len, unbiased = FALSE),
+  mmd_rbf(W_real, W_white, gamma = 1 / CFG$seq_len, unbiased = FALSE)
+)[seq_len(nrow(mmd_tbl))]
+
+knitr::kable(mmd_tbl, digits = 6,
+             caption = paste("Maximum mean discrepancy. The first column uses",
+                             "the median-heuristic bandwidth and the unbiased",
+                             "estimator; the second reproduces the fixed 1/L",
+                             "biased version printed during training."))
+
+perm <- mmd_permutation_p(W_real, W_gen, n_perm = 200, gamma = GAMMA)
+cat(sprintf(paste("\nPermutation test, real vs generated: MMD = %.5f,",
+                  "null mean %.5f (SD %.5f), p = %.3f\n"),
+            perm$mmd, perm$null_mean, perm$null_sd, perm$p))
+record_value("mmd_perm_p", signif(perm$p, 3),
+             "permutation p, real vs generated windows")
+record_value("mmd_gamma", signif(GAMMA, 4), "median-heuristic kernel bandwidth")
+
+if (has_gan) {
+  perm_gan <- mmd_permutation_p(W_real, W_gan, n_perm = 200, gamma = GAMMA)
+  cat(sprintf("Permutation test, real vs GAN:       MMD = %.5f, p = %.3f\n",
+              perm_gan$mmd, perm_gan$p))
+  record_value("mmd_perm_p_gan", signif(perm_gan$p, 3),
+               "permutation p, real vs GAN windows")
+}
+
+record_value("mmd_main",        signif(mmd_main, 4))
+record_value("mmd_within_real", signif(mmd_within_real, 4))
+record_value("mmd_white",       signif(mmd_white, 4))
+```
+
+# 4. Figure 3: noise structure
+
+## 3A: power spectral density of the closed state
+
+Computed on closed-state segments only, so gating does not contaminate the estimate.
+This is the plot that tells you whether the model learned the recording noise or just
+its variance.
+
+```{r fig3-psd}
+longest_closed_run <- function(d, min_len) {
+  r <- rle(d$channels == 0)
+  ends <- cumsum(r$lengths)
+  starts <- ends - r$lengths + 1
+  keep <- which(r$values & r$lengths >= min_len)
+  if (!length(keep)) return(numeric(0))
+  unlist(lapply(keep, function(i) d$current[starts[i]:ends[i]]))
+}
+
+closed_real_seg <- longest_closed_run(real, CFG$psd_seg)
+closed_gen_seg  <- longest_closed_run(gen,  CFG$psd_seg)
+
+psd_labelled <- function(x, label, fs) {
+  p <- welch_psd(x, fs, CFG$psd_seg)
+  if (is.null(p)) {
+    warning("Not enough closed-state samples for a PSD estimate: ", label,
+            ". Lower CFG$psd_seg or use a record with longer closed periods.")
+    return(NULL)
+  }
+  dplyr::mutate(p, source = label)
+}
+
+psd_df <- dplyr::bind_rows(
+  psd_labelled(closed_real_seg, "Real",      FS_REAL),
+  psd_labelled(closed_gen_seg,  "Generated", FS_GEN)
+)
+
+stopifnot(nrow(psd_df) > 0)
+
+if (has_single) {
+  cs <- longest_closed_run(gen_single, CFG$psd_seg)
+  if (length(cs) >= CFG$psd_seg) {
+    psd_df <- dplyr::bind_rows(psd_df, psd_labelled(cs, "Single-stage", FS_SING))
+  }
+}
+
+closed_gan_seg <- if (has_gan) longest_closed_run(gan, CFG$psd_seg) else numeric(0)
+if (length(closed_gan_seg) >= CFG$psd_seg) {
+  psd_df <- dplyr::bind_rows(psd_df, psd_labelled(closed_gan_seg, "GAN", FS_GAN))
+}
+
+p_psd <- ggplot(psd_df, aes(freq, psd, colour = source)) +
+  geom_line(linewidth = 0.5) +
+  geom_vline(xintercept = CFG$filter_hz, linetype = "dashed",
+             colour = "grey50", linewidth = 0.3) +
+  annotate("text", x = CFG$filter_hz, y = Inf, label = "filter corner",
+           hjust = -0.1, vjust = 1.6, size = 2.8, colour = "grey40") +
+  scale_x_log10(labels = scales::label_number()) +
+  scale_y_log10(labels = scales::label_scientific()) +
+  scale_colour_manual(values = pal_source) +
+  labs(x = "Frequency (Hz)", y = expression(PSD~(pA^2/Hz))) +
+  theme_channel()
+
+p_psd
+save_fig(p_psd, "fig3A_psd")
+
+# Quantify agreement as the RMS difference in log10 PSD below the filter corner.
+psd_cmp <- psd_df |>
+  dplyr::filter(freq < CFG$filter_hz, source %in% c("Real", "Generated")) |>
+  tidyr::pivot_wider(names_from = source, values_from = psd) |>
+  tidyr::drop_na()
+
+psd_rmse <- sqrt(mean((log10(psd_cmp$Real) - log10(psd_cmp$Generated))^2))
+
+# Same statistic for the GAN, so the two methods are scored identically.
+psd_rmse_gan <- NA_real_
+if (has_gan && "GAN" %in% psd_df$source) {
+  pc <- psd_df |>
+    dplyr::filter(freq < CFG$filter_hz, source %in% c("Real", "GAN")) |>
+    tidyr::pivot_wider(names_from = source, values_from = psd) |>
+    tidyr::drop_na()
+  if (nrow(pc)) {
+    psd_rmse_gan <- sqrt(mean((log10(pc$Real) - log10(pc$GAN))^2))
+    record_value("psd_log_rmse_gan", round(psd_rmse_gan, 3),
+                 "RMS difference in log10 PSD below filter corner, GAN")
+  }
+}
+record_value("psd_log_rmse", round(psd_rmse, 3),
+             "RMS difference in log10 PSD below filter corner")
+record_value("psd_description",
+  sprintf(paste("Real and generated spectra agree to an RMS difference of %.2f",
+                "log10 units below the %g Hz filter corner."),
+          psd_rmse, CFG$filter_hz),
+  "REPLACE with your own reading of Figure 3A")
+```
+
+## 3B: autocorrelation of the baseline residual
+
+```{r fig3-acf}
+acf_of <- function(x, lag_max, fs) {
+  a <- stats::acf(x - mean(x), lag.max = lag_max, plot = FALSE, demean = TRUE)
+  tibble::tibble(lag_ms = 1000 * a$lag[, 1, 1] / fs, acf = a$acf[, 1, 1])
+}
+
+acf_df <- dplyr::bind_rows(
+  dplyr::mutate(acf_of(closed_real_seg, CFG$acf_lag_max, FS_REAL), source = "Real"),
+  dplyr::mutate(acf_of(closed_gen_seg,  CFG$acf_lag_max, FS_GEN),  source = "Generated"),
+  if (length(closed_gan_seg) > CFG$acf_lag_max) {
+    dplyr::mutate(acf_of(closed_gan_seg, CFG$acf_lag_max, FS_GAN), source = "GAN")
+  }
+)
+
+p_acf <- ggplot(acf_df, aes(lag_ms, acf, colour = source)) +
+  geom_hline(yintercept = 0, colour = "grey70", linewidth = 0.3) +
+  geom_line(linewidth = 0.5) +
+  scale_colour_manual(values = pal_source) +
+  labs(x = "Lag (ms)", y = "Autocorrelation") +
+  theme_channel()
+
+p_acf
+save_fig(p_acf, "fig3B_autocorrelation")
+
+# Compare on lag index rather than lag time, so a rate mismatch does not
+# silently drop every row when the two lag grids fail to line up.
+acf_wide <- acf_df |>
+  dplyr::group_by(source) |>
+  dplyr::mutate(lag_n = dplyr::row_number()) |>
+  dplyr::ungroup() |>
+  dplyr::select(lag_n, source, acf) |>
+  tidyr::pivot_wider(names_from = source, values_from = acf) |>
+  tidyr::drop_na()
+acf_rmse <- sqrt(mean((acf_wide$Real - acf_wide$Generated)^2))
+
+acf_rmse_gan <- NA_real_
+if (has_gan && "GAN" %in% acf_df$source) {
+  aw <- acf_df |>
+    dplyr::group_by(source) |>
+    dplyr::mutate(lag_n = dplyr::row_number()) |>
+    dplyr::ungroup() |>
+    dplyr::filter(source %in% c("Real", "GAN")) |>
+    dplyr::select(lag_n, source, acf) |>
+    tidyr::pivot_wider(names_from = source, values_from = acf) |>
+    tidyr::drop_na()
+  if (nrow(aw)) {
+    acf_rmse_gan <- sqrt(mean((aw$Real - aw$GAN)^2))
+    record_value("acf_rmse_gan", round(acf_rmse_gan, 4),
+                 "RMS difference in ACF, real vs GAN")
+  }
+}
+
+record_value("acf_rmse", round(acf_rmse, 4), "RMS difference in ACF")
+record_value("acf_description",
+  sprintf("ACF curves differ by an RMS of %.3f over the first %.1f ms of lag.",
+          acf_rmse, 1000 * CFG$acf_lag_max / FS_REAL),
+  "REPLACE with your own reading of Figure 3B")
+
+p_noise <- p_psd + p_acf + patchwork::plot_annotation(tag_levels = "A")
+save_fig(p_noise, "fig3_noise", width = 10, height = 4)
+```
+
+# 5. Figure 4: the slow envelope
+
+```{r fig4-envelope}
+env_real <- block_mean(real$current, CFG$slow_factor)
+env_gen  <- block_mean(gen$current,  CFG$slow_factor)
+
+env_len <- min(length(env_real), length(env_gen))
+env_df  <- dplyr::bind_rows(
+  tibble::tibble(idx = seq_len(env_len), value = env_real[seq_len(env_len)],
+                 source = "Real"),
+  tibble::tibble(idx = seq_len(env_len), value = env_gen[seq_len(env_len)],
+                 source = "Generated")
+)
+
+if (has_single) {
+  env_single <- block_mean(gen_single$current, CFG$slow_factor)
+  el <- min(env_len, length(env_single))
+  env_df <- dplyr::bind_rows(
+    env_df,
+    tibble::tibble(idx = seq_len(el), value = env_single[seq_len(el)],
+                   source = "Single-stage")
+  )
+}
+
+if (has_gan) {
+  env_gan <- block_mean(gan$current, CFG$slow_factor)
+  eg <- min(env_len, length(env_gan))
+  env_df <- dplyr::bind_rows(
+    env_df,
+    tibble::tibble(idx = seq_len(eg), value = env_gan[seq_len(eg)], source = "GAN")
+  )
+}
+
+env_fs <- c("Real" = FS_REAL, "Generated" = FS_GEN,
+            "Single-stage" = FS_SING, "GAN" = FS_GAN)
+env_df <- dplyr::mutate(env_df,
+  time_s = idx * CFG$slow_factor / unname(env_fs[source]))
+
+p_env <- ggplot(env_df, aes(time_s, value, colour = source)) +
+  geom_line(linewidth = 0.4) +
+  facet_wrap(~ source, ncol = 1, scales = "free_y") +
+  scale_colour_manual(values = pal_source, guide = "none") +
+  labs(x = "Time (s)", y = "Envelope current (pA)") +
+  theme_channel()
+
+p_env
+save_fig(p_env, "fig4A_envelope", height = 5)
+
+p_env_dist <- ggplot(env_df, aes(value, colour = source, fill = source)) +
+  geom_density(alpha = 0.18, linewidth = 0.5) +
+  scale_colour_manual(values = pal_source) +
+  scale_fill_manual(values = pal_source) +
+  labs(x = "Envelope current (pA)", y = "Density") +
+  theme_channel()
+
+save_fig(p_env_dist, "fig4C_envelope_distribution")
+
+record_value("env_sd_real",     round(sd(env_real), 4))
+record_value("env_sd_cascade",  round(sd(env_gen), 4))
+
+We_r <- make_windows(env_real, min(64, length(env_real)), CFG$n_windows_mmd)
+We_g <- make_windows(env_gen,  min(64, length(env_gen)),  CFG$n_windows_mmd)
+record_value("mmd_env_cascade", signif(mmd_rbf(We_r, We_g), 4))
+
+if (has_gan) {
+  record_value("env_sd_gan", round(sd(env_gan), 4))
+  We_gan <- make_windows(env_gan, min(64, length(env_gan)), CFG$n_windows_mmd)
+  record_value("mmd_env_gan", signif(mmd_rbf(We_r, We_gan), 4))
+}
+
+if (has_single) {
+  record_value("env_sd_single", round(sd(env_single), 4))
+  We_s <- make_windows(env_single, min(64, length(env_single)), CFG$n_windows_mmd)
+  record_value("mmd_env_single", signif(mmd_rbf(We_r, We_s), 4))
+} else {
+  record_value("env_sd_single",  "NOT RUN", "no single-stage ablation available")
+  record_value("mmd_env_single", "NOT RUN", "no single-stage ablation available")
+}
+```
+
+# 6. Figure 5: block joins
+
+If the context-carry inpainting works, the distribution of sample-to-sample differences
+in the neighbourhood of a block boundary should be indistinguishable from that within
+blocks. If it does not work, you will see it here before a reviewer does.
+
+```{r fig5-seams}
+step <- CFG$block_len - CFG$context_len
+boundaries <- seq(step, nrow(gen) - 1, by = step)
+boundaries <- boundaries[boundaries > CFG$context_len &
+                         boundaries < (nrow(gen) - CFG$context_len)]
+
+diffs <- diff(gen$current)
+
+if (length(boundaries)) {
+  near_idx <- unique(unlist(lapply(boundaries, function(b)
+    seq(b - CFG$context_len %/% 2, b + CFG$context_len %/% 2))))
+  near_idx <- near_idx[near_idx >= 1 & near_idx <= length(diffs)]
+  far_idx  <- setdiff(seq_along(diffs), near_idx)
+
+  ks_seam <- ks_safe(diffs[near_idx], diffs[far_idx])
+  record_value("ks_seam", round(unname(ks_seam$statistic), 4),
+               "KS statistic, sample differences near vs away from block joins")
+  print(ks_seam)
+
+  seam_df <- dplyr::bind_rows(
+    tibble::tibble(d = diffs[near_idx], where = "Near block join"),
+    tibble::tibble(d = diffs[sample(far_idx, min(length(far_idx),
+                                                 length(near_idx)))],
+                   where = "Within block")
+  )
+
+  p_seam <- ggplot(seam_df, aes(d, colour = where)) +
+    geom_density(linewidth = 0.6, adjust = 0.8) +
+    scale_colour_manual(values = c("Near block join" = "#c0392b",
+                                   "Within block"    = "#1b1b1b")) +
+    labs(x = "Sample-to-sample difference (pA)", y = "Density") +
+    theme_channel()
+  print(p_seam)
+  save_fig(p_seam, "fig5B_seam_test")
+} else {
+  message("Generated record spans a single block; no joins to test.")
+  record_value("ks_seam", "N/A", "single block, no joins")
+}
+
+# The long trace itself, with boundaries marked.
+decim <- max(1L, nrow(gen) %/% 20000L)
+long_df <- gen[seq(1, nrow(gen), by = decim), ]
+
+p_long <- ggplot(long_df, aes(time, current)) +
+  geom_line(linewidth = 0.15, colour = pal_source[["Generated"]]) +
+  { if (length(boundaries))
+      geom_vline(xintercept = gen$time[boundaries], linetype = "dashed",
+                 colour = "grey55", linewidth = 0.3) } +
+  labs(x = "Time (s)", y = "Current (pA)") +
+  theme_channel()
+
+p_long
+save_fig(p_long, "fig5A_long_record", height = 3)
+```
+
+# 7. Figure 6: dwell times and the ground-truth check
+
+Two comparisons. First, dwell times from the *simulated conditioning idealisation* --
+this is the exact ground truth. Second, dwell times recovered by idealising the
+*generated current trace* with a conventional half-amplitude criterion, as though it
+were an experimental record. The gap between them is the missed-event loss, and being
+able to measure it at all is the point of the whole conditional design.
+
+```{r fig6-dwell}
+dw_truth <- dwell_times(gen$channels, FS_GEN) |>
+  dplyr::mutate(origin = "Ground truth (simulated)")
+
+n_lev <- max(gen$channels, na.rm = TRUE)
+ideal_recovered <- idealise_half_amplitude(gen$current, n_levels = max(1, n_lev))
+
+if (all(is.na(ideal_recovered))) {
+  stop("The half-amplitude idealiser failed on the generated trace. ",
+       "Read the baseline and open level off Figure 2E and pass them in:\n",
+       "  idealise_half_amplitude(gen$current, unit_pA = <open - baseline>, ",
+       "baseline = <closed level>, n_levels = max(1, n_lev))")
+}
+if (length(rle(ideal_recovered)$lengths) > 0.5 * length(ideal_recovered)) {
+  warning("The recovered idealisation switches on almost every sample, which ",
+          "means the level estimate is wrong rather than that the record is ",
+          "fast. Check unit_pA before believing anything in Figure 6C-D.")
+}
+
+dw_recov <- dwell_times(ideal_recovered, FS_GEN) |>
+  dplyr::mutate(origin = "Recovered from generated current")
+
+dw_real <- dwell_times(real$channels, FS_REAL) |>
+  dplyr::mutate(origin = "Real (expert idealised)")
+
+# The GAN emitted its Channels column itself, so those labels are a network
+# output rather than a known truth. They are plotted for comparison but they
+# are not a ground truth and must not be described as one.
+dw_gan <- if (has_gan) {
+  dwell_times(gan$channels, FS_GAN) |>
+    dplyr::mutate(origin = "GAN (network's own labels)")
+} else NULL
+
+dw_all <- dplyr::bind_rows(dw_truth, dw_recov, dw_real, dw_gan) |>
+  dplyr::filter(dwell_ms > 0)
+
+# Sigworth-Sine display: log abscissa, square-root ordinate.
+p_dwell <- ggplot(dw_all, aes(dwell_ms, colour = origin)) +
+  geom_freqpoly(aes(y = after_stat(sqrt(count))), bins = 40, linewidth = 0.55) +
+  scale_x_log10(labels = scales::label_number()) +
+  facet_wrap(~ state, scales = "free_y") +
+  scale_colour_manual(values = c(
+    "Ground truth (simulated)"         = "#1b1b1b",
+    "Recovered from generated current" = "#c0392b",
+    "Real (expert idealised)"          = "#2980b9",
+    "GAN (network's own labels)"       = "#8e44ad")) +
+  labs(x = "Dwell time (ms)", y = expression(sqrt(count))) +
+  theme_channel() +
+  theme(legend.position = "top", legend.direction = "vertical")
+
+p_dwell
+save_fig(p_dwell, "fig6_dwell_times", width = 8, height = 4.6)
+
+dwell_summary <- dw_all |>
+  dplyr::group_by(origin, state) |>
+  dplyr::summarise(
+    n         = dplyr::n(),
+    mean_ms   = mean(dwell_ms),
+    median_ms = median(dwell_ms),
+    .groups   = "drop"
+  )
+
+knitr::kable(dwell_summary, digits = 3,
+             caption = "Dwell-time summary by origin and state.")
+readr::write_csv(dwell_summary, file.path(CFG$out_dir, "dwell_summary.csv"))
+
+get_mean <- function(df, o, s) {
+  v <- df |> dplyr::filter(origin == o, state == s) |> dplyr::pull(mean_ms)
+  if (length(v)) round(v[1], 3) else NA_real_
+}
+
+record_value("tau_open_true",       get_mean(dwell_summary, "Ground truth (simulated)", "Open"))
+record_value("tau_closed_true",     get_mean(dwell_summary, "Ground truth (simulated)", "Closed"))
+record_value("tau_open_recovered",  get_mean(dwell_summary, "Recovered from generated current", "Open"))
+record_value("tau_closed_recovered", get_mean(dwell_summary, "Recovered from generated current", "Closed"))
+```
+
+Note that `mean_ms` is a mean dwell time, not a fitted exponential time constant. If you
+want the time constants quoted in the manuscript to be fitted rather than empirical,
+fit a mixture of exponentials to `dw_all` and substitute those. The empirical mean is a
+defensible summary and is what the placeholders currently carry.
+
+# 8. Figure 7: manifold projections
+
+```{r fig7-manifold, fig.height = 4.5}
+Wp_real <- make_windows(real$current, CFG$proj_win, CFG$n_windows_proj)
+Wp_gen  <- make_windows(gen$current,  CFG$proj_win, CFG$n_windows_proj)
+
+Wp_gan <- if (has_gan) make_windows(gan$current, CFG$proj_win, CFG$n_windows_proj)
+          else matrix(numeric(0), nrow = 0, ncol = CFG$proj_win)
+
+X   <- rbind(Wp_real, Wp_gen, Wp_gan)
+lab <- rep(c("Real", "Generated", "GAN"),
+           c(nrow(Wp_real), nrow(Wp_gen), nrow(Wp_gan)))
+
+# Robust scaling before projection, as in the DeepGANnel pipeline.
+X <- scale(X, center = TRUE, scale = TRUE)
+X[!is.finite(X)] <- 0
+
+um <- uwot::umap(X, n_neighbors = 15, min_dist = 0.1, n_components = 2)
+ts <- Rtsne::Rtsne(X, dims = 2, perplexity = 30, check_duplicates = FALSE,
+                   pca = TRUE, verbose = FALSE)$Y
+
+proj_df <- dplyr::bind_rows(
+  tibble::tibble(x = um[, 1], y = um[, 2], source = lab, method = "UMAP"),
+  tibble::tibble(x = ts[, 1], y = ts[, 2], source = lab, method = "t-SNE")
+) |>
+  dplyr::mutate(source = factor(source, levels = c("Real", "Generated", "GAN")))
+
+p_proj <- ggplot(proj_df, aes(x, y, colour = source)) +
+  geom_point(size = 0.6, alpha = 0.55) +
+  facet_wrap(~ method, scales = "free") +
+  scale_colour_manual(values = pal_source) +
+  labs(x = NULL, y = NULL) +
+  theme_channel() +
+  theme(axis.text = element_blank(), axis.ticks = element_blank())
+
+p_proj
+save_fig(p_proj, "fig7_manifold", width = 8, height = 4.2)
+
+readr::write_csv(proj_df, file.path(CFG$out_dir, "manifold_coordinates.csv"))
+```
+
+Cluster separation testing with `ClusterSignificance` (as in DeepGANnel) is not run here
+because the package is a Bioconductor dependency that many installations lack. If you
+have it, the projection coordinates have been written to `manifold_coordinates.csv` and
+can be fed to `ClusterSignificance::Pcp()` directly. Record the resulting p value against
+the `cluster_p` placeholder.
+
+```{r cluster-p}
+record_value("cluster_p", "TO BE FILLED",
+             "run ClusterSignificance on manifold_coordinates.csv")
+record_value("manifold_description", "REPLACE with your reading of Figure 7",
+             "describe the degree of overlap you actually see")
+```
+
+# 9. Table 3: collected similarity metrics
+
+```{r table3}
+# Head to head. Every metric is computed the same way for both methods, and
+# the reference column is what the real record gives against itself where that
+# is meaningful.
+num <- function(x, d = 4) if (length(x) && is.finite(x)) round(x, d) else NA_real_
+
+table3 <- tibble::tibble(
+  Metric = c(
+    "MMD vs real (median gamma, unbiased)",
+    "MMD permutation p",
+    "KS statistic, amplitude distribution",
+    "Closed-state SD (pA)",
+    "Log10 PSD RMS difference vs real",
+    "ACF RMS difference vs real",
+    "Envelope SD (pA)",
+    "MMD, envelope vs real"
+  ),
+  `Reference (real)` = c(
+    num(mmd_within_real, 6), NA_real_, NA_real_,
+    num(sd(closed_real)), NA_real_, NA_real_,
+    num(sd(env_real)), NA_real_
+  ),
+  Diffusion = c(
+    num(mmd_main, 6), num(perm$p, 3), num(unname(ks_amp$statistic)),
+    num(sd(closed_gen)), num(psd_rmse, 3), num(acf_rmse),
+    num(sd(env_gen)), num(mmd_rbf(We_r, We_g), 6)
+  )
+)
+
+if (has_gan) {
+  table3$GAN <- c(
+    num(mmd_gan, 6), num(perm_gan$p, 3), num(unname(ks_gan$statistic)),
+    num(sd(closed_gan)), num(psd_rmse_gan, 3), num(acf_rmse_gan),
+    num(sd(env_gan)), num(mmd_rbf(We_r, We_gan), 6)
+  )
+}
+
+knitr::kable(
+  table3,
+  caption = paste("Table 3. Similarity metrics.",
+                  if (has_gan)
+                    paste("Diffusion and GAN columns are computed identically.",
+                          "Lower is better throughout except the permutation p,",
+                          "where a large value means the difference from real is",
+                          "no bigger than relabelling produces.")
+                  else "")
+)
+
+readr::write_csv(table3, file.path(CFG$out_dir, "table3_metrics.csv"))
+```
+
+## What this comparison does and does not settle
+
+Both methods are scored identically on every row above, so the numbers are
+comparable as measures of *how much the synthetic data resemble the real
+record*. That is the only question they answer.
+
+They do not settle the question the paper is actually about. The GAN emits its
+raw trace and its Channels column together, so its labels are a network output;
+the diffusion pipeline is handed its labels before it starts and never touches
+them. A GAN record could match the real data better on every metric here and
+still be the less useful training set, because a downstream idealiser trained
+against it is being scored on another network's opinion rather than on truth.
+The dwell-time figure keeps the two apart deliberately: the diffusion arm has a
+"Ground truth (simulated)" trace, the GAN arm is labelled "network's own
+labels", and there is no equivalent ground-truth line for it to be compared to.
+
+If the GAN wins on similarity, say so plainly and make the ground-truth argument
+on its own terms. If it loses, the similarity result and the ground-truth
+argument point the same way, which is a stronger position but not a different
+one.
+
+# 10. Write the placeholder values
+
+```{r write-results}
+results_tbl <- dplyr::bind_rows(RESULTS$rows) |> dplyr::arrange(placeholder)
+
+readr::write_csv(results_tbl, file.path(CFG$out_dir, "results_values.csv"))
+
+knitr::kable(results_tbl,
+             caption = "Values keyed to the [[placeholders]] in the manuscript draft.")
+
+cat("\nWritten to", file.path(CFG$out_dir, "results_values.csv"), "\n")
+```
+
+## Tidy metrics for the meta-analysis
+
+One row per metric per method, written to `runs_dir` so that
+`DiffuChannel_meta.Rmd` can pool several seed records. The `direction` column
+is what makes pooling safe: metrics are not all oriented the same way, and
+averaging a "lower is better" distance with a "closer to the real value is
+better" summary statistic would be meaningless.
+
+```{r tidy-metrics}
+RUN_ID <- if (is.na(CFG$run_id)) {
+  paste0(basename(normalizePath(CFG$real_dir, mustWork = FALSE)),
+         "_", tools::file_path_sans_ext(basename(gen_path)))
+} else {
+  as.character(CFG$run_id)
+}
+RUN_ID <- gsub("[^A-Za-z0-9._-]+", "-", RUN_ID)
+
+dir.create(CFG$runs_dir, showWarnings = FALSE, recursive = TRUE)
+
+# key -> what it measures, whose number it is, and which way is better.
+#   lower       smaller is closer to the real record
+#   higher      larger is better (permutation p: a big value means the
+#               difference from real is no bigger than relabelling produces)
+#   match_real  the target is the real value, not zero, so the comparable
+#               quantity is the absolute difference from the reference
+#   reference   the real record's own value, used by match_real rows
+metric_map <- tibble::tribble(
+  ~key,               ~metric,                ~method,        ~direction,
+  "mmd_main",         "MMD vs real",          "Diffusion",    "lower",
+  "mmd_gan",          "MMD vs real",          "GAN",          "lower",
+  "mmd_within_real",  "MMD vs real",          "Real floor",   "reference",
+  "mmd_white",        "MMD vs real",          "White noise",  "reference",
+  "mmd_perm_p",       "MMD permutation p",    "Diffusion",    "higher",
+  "mmd_perm_p_gan",   "MMD permutation p",    "GAN",          "higher",
+  "ks_D",             "KS amplitude",         "Diffusion",    "lower",
+  "ks_D_gan",         "KS amplitude",         "GAN",          "lower",
+  "psd_log_rmse",     "log10 PSD RMS",        "Diffusion",    "lower",
+  "psd_log_rmse_gan", "log10 PSD RMS",        "GAN",          "lower",
+  "acf_rmse",         "ACF RMS",              "Diffusion",    "lower",
+  "acf_rmse_gan",     "ACF RMS",              "GAN",          "lower",
+  "mmd_env_cascade",  "MMD envelope",         "Diffusion",    "lower",
+  "mmd_env_gan",      "MMD envelope",         "GAN",          "lower",
+  "mmd_env_single",   "MMD envelope",         "Single-stage", "lower",
+  "sd_gen",           "Closed-state SD (pA)", "Diffusion",    "match_real",
+  "sd_gan",           "Closed-state SD (pA)", "GAN",          "match_real",
+  "sd_real",          "Closed-state SD (pA)", "Real",         "reference",
+  "env_sd_cascade",   "Envelope SD (pA)",     "Diffusion",    "match_real",
+  "env_sd_gan",       "Envelope SD (pA)",     "GAN",          "match_real",
+  "env_sd_single",    "Envelope SD (pA)",     "Single-stage", "match_real",
+  "env_sd_real",      "Envelope SD (pA)",     "Real",         "reference",
+  "ks_seam",          "KS block seam",        "Diffusion",    "lower"
+)
+
+vals <- dplyr::bind_rows(RESULTS$rows) |>
+  dplyr::mutate(num = suppressWarnings(as.numeric(gsub(",", "", value))))
+
+metrics_long <- metric_map |>
+  dplyr::inner_join(dplyr::select(vals, key = placeholder, num), by = "key") |>
+  dplyr::filter(is.finite(num)) |>
+  dplyr::transmute(kind = "metric", run_id = RUN_ID, metric, method,
+                   direction, value = num)
+
+# Provenance, so a pooled result can be traced back to what produced it.
+info <- tibble::tibble(
+  kind = "info", run_id = RUN_ID,
+  metric = c("seed_file", "ddpm_file", "gan_file", "n_seed_samples",
+             "fs_real_hz", "fs_gen_hz", "fs_gan_hz", "seq_len",
+             "slow_factor", "mmd_gamma", "analysed"),
+  method = "run",
+  direction = "info",
+  value = NA_real_,
+  text = c(paste(basename(unlist(lapply(real_list, function(d) d$record[1]))),
+                 collapse = "; "),
+           basename(gen_path),
+           if (has_gan) basename(gan_path) else "none",
+           format(nrow(real)), format(FS_REAL), format(FS_GEN),
+           if (has_gan) format(FS_GAN) else NA_character_,
+           format(CFG$seq_len), format(CFG$slow_factor),
+           format(signif(GAMMA, 4)), format(Sys.time()))
+)
+
+run_tbl <- dplyr::bind_rows(dplyr::mutate(metrics_long, text = NA_character_), info)
+
+run_path <- file.path(CFG$runs_dir, paste0(RUN_ID, "__metrics.csv"))
+readr::write_csv(run_tbl, run_path)
+
+cat("Run written to", run_path, "\n")
+cat("Pool several of these with DiffuChannel_meta.Rmd.\n")
+if (!has_gan) {
+  cat("Note: no GAN arm in this run, so it contributes to the pooled\n",
+      "     Diffusion summary but not to the paired comparison.\n", sep = "")
+}
+
+knitr::kable(dplyr::select(metrics_long, metric, method, direction, value),
+             digits = 6, caption = "Tidy metrics exported for pooling.")
+cat("Any row reading TO BE FILLED, NOT RUN or REPLACE needs your attention",
+    "before the manuscript goes anywhere.\n")
+```
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

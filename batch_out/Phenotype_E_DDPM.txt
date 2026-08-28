@@ -1,0 +1,51 @@
+Batch run: Phenotype_E
+======================
+
+Phenotype = Phenotype_E
+Seed file = c035[NF=50Hz]0-32_4kraw.csv
+Seed folder = /home/rbj/LGitHub/DeepGANnel/Phenotypes/Phenotype_E
+Seed rows = 366588
+Seed levels = [0, 1]
+Seed Popen = 0.8113
+Generated Popen = 0.8571
+time column = 0
+channels column = 2
+current column = 1
+channel levels = 2
+raw channel values = [-0.048, 0.0, 7.928]
+Run started = 2026-08-07T15:31:24
+Train seconds = 1683.8
+Fit seconds = 27.2
+Generate seconds = 7.9
+Total seconds = 1720.6
+Device = cuda
+Torch = 2.6.0+cu124
+Training seed = 42
+Generation seed = 0
+Sample dt = 0.0001
+Topology (zeros held) = [[0.97, 0.03, 0.0, 0.0], [0.02, 0.9, 0.08, 0.0], [0.0, 0.1, 0.85, 0.05], [0.0, 0.0, 0.2, 0.8]]
+Fitted P = [[0.98245, 0.01755, 0.0, 0.0], [0.01139, 0.87727, 0.11135, 0.0], [0.0, 0.01242, 0.98259, 0.00499], [0.0, 0.0, 0.03457, 0.96543]]
+Fit status = Fitted page 0 (50000 samples, 1 channel(s)). log-likelihood -4200.8, BIC 8466.4, 28 iterations, converged. Restart log-likelihoods: -4201.5, -4200.8, -4206.3. Mean dwell real/fitted per level -- 0: 14.8/17.0, 1: 92.0/90.5. Matrix updated; hit Preview to eyeball it.
+Export status = Generated 100000 rows (levels [0, 1]) -> generated_dataset.parquet
+cfg.seq_len = 128
+cfg.epochs = 20
+cfg.batch_size = 32
+cfg.lr = 0.0001
+cfg.timesteps = 200
+cfg.base_channels = 64
+cfg.stride = 16
+cfg.viz_every = 25
+cfg.n_samples = 3
+cfg.use_slow = True
+cfg.slow_factor = 64
+cfg.slow_mult = 4
+cfg.slow_phases = 1
+cfg.open_states = 3,4
+cfg.fit_samples = 50000
+cfg.restarts = 3
+cfg.prior = 0.5
+cfg.n_steps = 100000
+cfg.decimate = 1
+cfg.seed = 0
+cfg.n_channels = 1
+cfg.preview_len = 5000

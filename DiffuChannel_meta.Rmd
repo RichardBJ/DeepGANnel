@@ -1,0 +1,292 @@
+---
+title: "DiffuChannel: pooled analysis across seed records"
+author: "Barrett-Jolley lab"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+    theme: flatly
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.width = 7, fig.height = 4.5, dpi = 150)
+```
+
+# Purpose
+
+`DiffuChannel_analysis.Rmd` writes one tidy file per seed record into `runs_dir`.
+This notebook pools them, so that a claim rests on several recordings rather than
+on whichever one was analysed first.
+
+The design is **paired**: every method sees the same seed record, so the useful
+quantity is the within-seed difference between methods, not the spread across
+seeds. Seed records differ enormously in noise, open probability and duration,
+and that between-seed variation would swamp any method difference if the runs
+were treated as independent samples.
+
+```{r packages}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(purrr)
+
+set.seed(42)
+```
+
+# Configuration
+
+```{r config}
+META <- list(
+  runs_dir = "./runs",        # folder written by the per-record notebook
+  out_dir  = "./figures_meta",
+  # Methods to place side by side. The first is treated as the reference arm
+  # in the paired comparisons.
+  compare  = c("Diffusion", "GAN")
+)
+
+dir.create(META$out_dir, showWarnings = FALSE, recursive = TRUE)
+
+theme_meta <- function(base = 11) {
+  theme_classic(base_size = base) +
+    theme(strip.background = element_blank(),
+          strip.text = element_text(face = "bold", hjust = 0),
+          legend.position = "top", legend.title = element_blank(),
+          axis.text = element_text(colour = "black"))
+}
+
+pal <- c("Diffusion" = "#c0392b", "GAN" = "#8e44ad",
+         "Single-stage" = "#2980b9", "Real" = "#1b1b1b",
+         "Real floor" = "#7f8c8d", "White noise" = "#bdc3c7")
+```
+
+# 1. Collect the runs
+
+```{r collect}
+files <- list.files(META$runs_dir, pattern = "__metrics\\.csv$", full.names = TRUE)
+
+if (!length(files)) {
+  stop("No run files in ", META$runs_dir, ". Run DiffuChannel_analysis.Rmd ",
+       "once per seed record first; each run writes one file here.")
+}
+
+all_rows <- purrr::map_dfr(files, readr::read_csv, show_col_types = FALSE)
+
+runs <- sort(unique(all_rows$run_id))
+cat(sprintf("%d run(s) found: %s\n", length(runs), paste(runs, collapse = ", ")))
+
+if (anyDuplicated(paste(all_rows$run_id, all_rows$metric, all_rows$method,
+                        all_rows$kind))) {
+  warning("Duplicate run_id/metric/method rows. Two runs probably shared a ",
+          "run_id and one has overwritten part of the other. Check ",
+          META$runs_dir, " and set CFG$run_id explicitly.")
+}
+```
+
+## Provenance
+
+```{r provenance}
+info <- all_rows |>
+  dplyr::filter(kind == "info") |>
+  dplyr::select(run_id, metric, text) |>
+  tidyr::pivot_wider(names_from = metric, values_from = text)
+
+knitr::kable(info, caption = "What each run was computed from.")
+readr::write_csv(info, file.path(META$out_dir, "meta_provenance.csv"))
+```
+
+A run that used a different `seq_len`, `slow_factor` or sampling rate is not
+strictly comparable with the others. The table above is there to be read, not
+skipped: pooling runs that were computed differently is the commonest way a
+meta-analysis goes quietly wrong.
+
+```{r consistency}
+for (v in c("seq_len", "slow_factor")) {
+  if (v %in% names(info) && dplyr::n_distinct(info[[v]]) > 1) {
+    warning("Runs differ in ", v, " (", paste(unique(info[[v]]), collapse = ", "),
+            "). They are being pooled anyway, but the comparison is no longer ",
+            "like for like.")
+  }
+}
+```
+
+# 2. Put the metrics on a comparable footing
+
+Metrics are not all oriented the same way. Distances should be small; the
+permutation p should be large; and summary statistics such as the closed-state
+standard deviation should match the real record rather than approach zero. For
+that last group the comparable quantity is the absolute difference from the
+real reference, which the per-record notebook exports alongside them.
+
+```{r score}
+metrics <- dplyr::filter(all_rows, kind == "metric")
+
+refs <- metrics |>
+  dplyr::filter(direction == "reference", method == "Real") |>
+  dplyr::select(run_id, metric, ref = value)
+
+scored <- metrics |>
+  dplyr::filter(direction %in% c("lower", "higher", "match_real")) |>
+  dplyr::left_join(refs, by = c("run_id", "metric")) |>
+  dplyr::mutate(
+    score = dplyr::case_when(
+      direction == "match_real" ~ abs(value - ref),
+      TRUE                      ~ value
+    ),
+    # after scoring, every metric is either "smaller is better" or the single
+    # "larger is better" case
+    better = ifelse(direction == "higher", "higher", "lower")
+  ) |>
+  dplyr::select(run_id, metric, method, direction, better, value, ref, score)
+
+knitr::kable(
+  scored |> dplyr::arrange(metric, method, run_id) |>
+    dplyr::select(metric, method, run_id, value, ref, score),
+  digits = 6, caption = "Raw values and the comparable score derived from them."
+)
+```
+
+# 3. Paired comparison, one line per seed record
+
+```{r slopegraph, fig.height = 6}
+pairable <- scored |>
+  dplyr::filter(method %in% META$compare) |>
+  dplyr::group_by(metric, run_id) |>
+  dplyr::filter(dplyr::n_distinct(method) == length(META$compare)) |>
+  dplyr::ungroup()
+
+if (!nrow(pairable)) {
+  message("No metric has all of ", paste(META$compare, collapse = " and "),
+          " present in the same run, so there is nothing to pair.")
+} else {
+  p_slope <- ggplot(pairable,
+                    aes(factor(method, levels = META$compare), score,
+                        group = run_id)) +
+    geom_line(colour = "grey55", linewidth = 0.4) +
+    geom_point(aes(colour = method), size = 2.2) +
+    facet_wrap(~ metric, scales = "free_y") +
+    scale_colour_manual(values = pal, guide = "none") +
+    labs(x = NULL, y = "Score (see note above)") +
+    theme_meta()
+  print(p_slope)
+  ggsave(file.path(META$out_dir, "meta_paired.png"), p_slope,
+         width = 9, height = 6, dpi = 300)
+}
+```
+
+Each line is one seed record. A consistent slope across every line is the
+result worth reporting; lines that cross mean the ranking depends on which
+recording you happened to analyse.
+
+# 4. Pooled summary
+
+```{r summary}
+wide <- pairable |>
+  dplyr::select(metric, run_id, better, method, score) |>
+  tidyr::pivot_wider(names_from = method, values_from = score)
+
+if (nrow(wide)) {
+  a <- META$compare[1]; b <- META$compare[2]
+
+  meta_summary <- wide |>
+    dplyr::mutate(diff = .data[[a]] - .data[[b]]) |>
+    dplyr::group_by(metric, better) |>
+    dplyr::summarise(
+      n_runs        = dplyr::n(),
+      median_a      = median(.data[[a]]),
+      median_b      = median(.data[[b]]),
+      median_diff   = median(diff),
+      min_diff      = min(diff),
+      max_diff      = max(diff),
+      # how many seeds favour the first method, given the metric's polarity
+      n_favour_a    = sum(if (first(better) == "lower") diff < 0 else diff > 0),
+      unanimous     = n_favour_a %in% c(0, dplyr::n()),
+      .groups = "drop"
+    ) |>
+    dplyr::rename(!!paste0("median_", a) := median_a,
+                  !!paste0("median_", b) := median_b,
+                  !!paste0("n_favour_", a) := n_favour_a)
+
+  knitr::kable(meta_summary, digits = 6,
+               caption = paste("Pooled comparison.", a, "minus", b,
+                               "within each seed record."))
+  readr::write_csv(meta_summary, file.path(META$out_dir, "meta_summary.csv"))
+  readr::write_csv(scored, file.path(META$out_dir, "meta_scores_long.csv"))
+} else {
+  meta_summary <- NULL
+  message("Nothing to summarise.")
+}
+```
+
+# 5. What can and cannot be concluded from this many runs
+
+```{r power}
+n_runs <- length(runs)
+cat(sprintf("Runs pooled: %d\n\n", n_runs))
+
+# Smallest two-sided p a sign test can return for n paired observations, i.e.
+# the p you get when every single run favours the same method.
+min_p_sign <- function(n) min(1, 2 * 0.5^n)
+
+cat(sprintf(paste("With %d paired runs, the smallest two-sided p a sign test",
+                  "can produce is %.3f,\neven if every run favours the same",
+                  "method.\n"), n_runs, min_p_sign(n_runs)))
+
+if (min_p_sign(n_runs) > 0.05) {
+  cat("\nThat is above 0.05, so no significance test on these data can reach\n",
+      "significance regardless of how large or how consistent the effect is.\n",
+      "Reporting a p value here would be misleading rather than conservative.\n",
+      "Report instead: the per-run values, the direction, and whether it is\n",
+      "unanimous. Those are the honest summaries at this sample size.\n", sep = "")
+} else {
+  cat("\nA sign test is at least capable of reaching p < 0.05 here.\n")
+  if (!is.null(meta_summary)) {
+    sign_tests <- wide |>
+      dplyr::mutate(diff = .data[[META$compare[1]]] - .data[[META$compare[2]]]) |>
+      dplyr::group_by(metric) |>
+      dplyr::summarise(
+        n = dplyr::n(),
+        p_sign = binom.test(sum(diff < 0), dplyr::n())$p.value,
+        .groups = "drop"
+      )
+    knitr::kable(sign_tests, digits = 4, caption = "Sign test per metric.")
+  }
+}
+```
+
+```{r direction}
+if (!is.null(meta_summary)) {
+  a <- META$compare[1]
+  dir_tbl <- meta_summary |>
+    dplyr::transmute(
+      Metric = metric,
+      `Seeds pooled` = n_runs,
+      `Seeds favouring` = sprintf("%d/%d %s",
+                                  .data[[paste0("n_favour_", a)]], n_runs, a),
+      Verdict = dplyr::case_when(
+        .data[[paste0("n_favour_", a)]] == n_runs ~ paste("consistent:", a),
+        .data[[paste0("n_favour_", a)]] == 0      ~ paste("consistent:", META$compare[2]),
+        TRUE                                      ~ "inconsistent across seeds"
+      )
+    )
+  knitr::kable(dir_tbl, caption = "Direction of effect, which is what this
+               sample size supports reporting.")
+  readr::write_csv(dir_tbl, file.path(META$out_dir, "meta_direction.csv"))
+}
+```
+
+Three seed records is enough to show that a result is not an accident of one
+recording. It is not enough to estimate an effect size, and a confidence
+interval computed from three paired differences will be too wide to constrain
+anything. If a metric comes out inconsistent, that is a finding in itself and
+worth saying: it means the two methods are close enough that recording-specific
+detail decides the ranking.
+
+# Session information
+
+```{r session}
+sessionInfo()
+```
