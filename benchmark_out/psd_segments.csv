@@ -1,0 +1,6 @@
+phenotype,level,cap,nperseg,seg_ms,res_hz,Real,Diffusion,GAN,n_used
+Phenotype_A,closed,1533,512,51.2,19.53125,36,29,45,29
+Phenotype_B,closed,4668,1024,102.4,9.765625,120,113,85,85
+Phenotype_C,closed,3597,1024,102.4,9.765625,55,26,40,26
+Phenotype_D,open,950,256,25.599999999940334,39.06250000009104,422,415,179,179
+Phenotype_E,open,579,256,12.799999999970167,78.12500000018208,86,94,94,86
