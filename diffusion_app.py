@@ -292,6 +292,9 @@ def run_training(
 
         coarse_blob = {
             "model_state_dict": coarse.state_dict(),
+            "history": chist,
+            "epochs": int(coarse_epochs),
+            "steps": int(cstep),
             "config": {"base_channels": int(base_channels), "time_dim": 128,
                        "timesteps": int(timesteps), "cond_channels": 4 + emb_dim},
             "norm": {"cond_mean": ccond_mean.ravel().tolist(),
