@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.8.28)  28 AUG 2026 14:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.8.28)  1 SEP 2026 16:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1011,7 +1011,7 @@ Package pdftex.def Info: DiffuChannel_benchmark_files/figure-latex/fig-manifold
 -2.pdf  used on input line 3248.
 (pdftex.def)             Requested size: 542.02367pt x 867.2379pt.
 [62] [63 <./DiffuChannel_benchmark_files/figure-latex/fig-manifold-2.pdf>]
-Overfull \hbox (67.21667pt too wide) in alignment at lines 3302--3354
+Overfull \hbox (70.55pt too wide) in alignment at lines 3302--3354
  [] [] [] 
  []
 
@@ -1027,7 +1027,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  16065 strings out of 467471
  256942 string characters out of 5414532
- 812779 words of memory out of 5000000
+ 812778 words of memory out of 5000000
  44825 multiletter control sequences out of 15000+600000
  672584 words of font info for 124 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1040,7 +1040,7 @@ fb><C:/Program Files/MiKTeX 25.12/fonts/type1/public/lm/lmri10.pfb><C:/Program
 Files/MiKTeX 25.12/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files/MiKTeX 25
 .12/fonts/type1/public/lm/lmtt10.pfb><C:/Program Files/MiKTeX 25.12/fonts/type1
 /public/lm/lmtti10.pfb>
-Output written on DiffuChannel_benchmark.pdf (66 pages, 3752640 bytes).
+Output written on DiffuChannel_benchmark.pdf (66 pages, 3751256 bytes).
 PDF statistics:
  655 PDF objects out of 1000 (max. 8388607)
  117 named destinations out of 1000 (max. 500000)
