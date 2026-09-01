@@ -3,13 +3,13 @@ title: 'DiffuChannel benchmark: diffusion vs DeepGANnel across all phenotypes'
 author: "Barrett-Jolley lab"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 output:
+  html_document:
+    toc: true
+    df_print: paged
   pdf_document:
     toc: true
     number_sections: false
     md_extensions: -tex_math_dollars
-  html_document:
-    toc: true
-    df_print: paged
 ---
 
 ```{r setup, include = FALSE}
