@@ -27,7 +27,7 @@ Every arm is scored identically. Whether that flatters the diffusion model OR NO
 this paper's business.
 
 ```{r packages}
-required <- c("dplyr", "tidyr", "ggplot2", "readr", "purrr", "arrow",
+required <- c("dplyr", "tidyr", "ggplot2", "readr", "purrr", "arrow","ggh4x",
               "scales", "patchwork", "tibble","Rtsne", "uwot", "kableExtra")
 missing  <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
 if (length(missing)) {
@@ -44,6 +44,7 @@ library(arrow)
 library(patchwork)
 library(uwot)
 library(Rtsne)
+library(ggh4x)
 
 set.seed(42)
 ```
@@ -2308,9 +2309,7 @@ save_fig(p_env, "fig_envelope", width = 8, height = 2.2 * ceiling(n_ph / 2) + 1)
 
 The density above says whether the envelope has the right spread; it says
 nothing about whether it wanders on the right timescale, because a distribution
-has no time axis. The panel below is the envelope as a time course, which is
-what the manuscript's Figure 4A shows. It was previously produced only by
-`DiffuChannel_analysis.Rmd`, one record at a time.
+has no time axis. The panel below is the envelope as a time course. 
 
 ```{r fig-env-time, fig.height = 7}
 # idx counts blocks of slow_factor samples, so seconds need the rate of the arm
@@ -2330,9 +2329,9 @@ if (any(!is.finite(env_time$time_s)))
 
 p_env_time <- ggplot(env_time, aes(time_s, value, colour = source)) +
   geom_line(linewidth = 0.3) +
-  facet_grid(phenotype ~ source, scales = "free_y",
-             labeller = labeller(
-               phenotype = function(x) gsub("_", "\n", x, fixed = TRUE))) +
+  facet_grid2(phenotype ~ source, scales = "free", independent = "all",
+              labeller = labeller(
+                phenotype = function(x) gsub("_", "\n", x, fixed = TRUE))) +
   scale_colour_manual(values = pal, guide = "none") +
   labs(x = "Time (s)", y = "Envelope current (pA)") +
   theme_channel() +
