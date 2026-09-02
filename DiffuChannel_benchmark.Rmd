@@ -94,11 +94,26 @@ CFG <- list(
   ks_subsample  = 2e5,
   trace_secs    = 0.3,
 
+  # ---- generation block geometry ------------------------------------------
+  # Only used by the block-join (seam) test. These must match what
+  # diffusion_app.py actually generated with, or the boundaries are looked for
+  # in the wrong places and the test passes for a reason that has nothing to do
+  # with the inpainting.
+  block_len      = 32768,       # generation block length, samples
+  context_len    = 512,         # carried context at block joins, samples
+
   # ---- optional extras ----------------------------------------------------
   do_manifold    = TRUE,        # UMAP / t-SNE, needs uwot + Rtsne, slow
   n_windows_proj = 400,
 
   proj_win       = 512,
+
+  # ClusterSignificance on the manifold projections, for [[cluster_p]]. The
+  # package is on Bioconductor, not CRAN, so it is optional and the chunk
+  # skips rather than fails when it is absent. The permutation is the slow
+  # part: n_perm_cluster permutations per phenotype per projection method.
+  do_cluster_test = TRUE,
+  n_perm_cluster  = 100,
 
   cache = FALSE                   # reuse per-phenotype results if present
   #Careful with caching - it can cause real confusion!!
@@ -120,11 +135,31 @@ theme_channel <- function(base_size = 10) {
           axis.text = element_text(colour = "black"))
 }
 
-save_fig <- function(plot, name, width = 8, height = 5) {
-  ggsave(file.path(CFG$out_dir, paste0(name, ".pdf")), plot,
-         width = width, height = height)
-  ggsave(file.path(CFG$out_dir, paste0(name, ".png")), plot,
-         width = width, height = height, dpi = 300)
+# Figures are written as LZW-compressed TIFF, which is what the journals ask
+# for and is lossless, so no generation of the figure is ever thrown away.
+#
+# The device is opened explicitly rather than left to ggsave's device
+# dispatch: ggsave has to guess how to forward `compression` to whichever
+# device it picks from the file extension, and when it guesses wrong it
+# silently writes an uncompressed TIFF. Opening the device by hand means the
+# compression argument goes exactly where it is meant to.
+#
+# ragg is preferred where it is installed because its text rendering on
+# Windows is much better than the stock device's; grDevices::tiff is the
+# fallback and takes the same compression argument.
+save_fig <- function(plot, name, width = 8, height = 5, dpi = 300) {
+  path <- file.path(CFG$out_dir, paste0(name, ".tiff"))
+
+  if (requireNamespace("ragg", quietly = TRUE)) {
+    ragg::agg_tiff(path, width = width, height = height, units = "in",
+                   res = dpi, compression = "lzw", background = "white")
+  } else {
+    grDevices::tiff(path, width = width, height = height, units = "in",
+                    res = dpi, compression = "lzw", bg = "white")
+  }
+  on.exit(grDevices::dev.off(), add = TRUE)
+
+  print(plot)
   invisible(plot)
 }
 
@@ -634,6 +669,63 @@ best_window <- function(chan, n, lo = 0.4, hi = 0.8) {
 }
 
 rms_diff <- function(a, b) sqrt(mean((a - b)^2))
+
+# Two-component exponential mixture on a set of dwell times, by EM, giving the
+# time constants the manuscript asks for rather than a mean dwell. Returns one
+# component rather than two when two cannot be supported, because a fit whose
+# components have converged onto each other reports a spurious pair of taus
+# that reads like a result. Same degeneracy test as fit_tcrit: a slow-to-fast
+# ratio under min_ratio, or a component holding almost no area, is one
+# component wearing two labels.
+#
+# Note this cannot rescue a record whose dwells are only a few samples long.
+# At 10 kHz a mean closed dwell of 0.39 ms is under four samples, the dwell
+# distribution is a handful of discrete values, and no exponential mixture is
+# meaningful. Those come back as one component and should be reported as mean
+# dwells instead.
+fit_exp_mixture <- function(x, n_iter = 500, tol = 1e-10, min_n = 20L,
+                            min_ratio = 3, min_area = 0.02) {
+  x <- x[is.finite(x) & x > 0]
+
+  one <- function() tibble::tibble(
+    n_components = 1L,
+    tau_fast_ms  = if (length(x)) mean(x) else NA_real_,
+    tau_slow_ms  = NA_real_,
+    area_fast    = NA_real_,
+    mean_ms      = if (length(x)) mean(x) else NA_real_,
+    n_events     = length(x))
+
+  if (length(x) < min_n) return(one())
+
+  tau <- as.numeric(stats::quantile(x, c(0.25, 0.9), names = FALSE))
+  if (!(tau[2] > tau[1])) return(one())
+  a <- c(0.5, 0.5)
+  ll_old <- -Inf
+
+  for (i in seq_len(n_iter)) {
+    d <- cbind(a[1] * stats::dexp(x, 1 / tau[1]),
+               a[2] * stats::dexp(x, 1 / tau[2]))
+    s <- rowSums(d)
+    s[s <= 0] <- .Machine$double.xmin
+    w  <- d[, 1] / s
+    sw <- sum(w)
+    if (!is.finite(sw) || sw < 1 || (length(x) - sw) < 1) return(one())
+    a   <- c(sw / length(x), 1 - sw / length(x))
+    tau <- c(sum(w * x) / sw, sum((1 - w) * x) / (length(x) - sw))
+    if (any(!is.finite(tau)) || any(tau <= 0)) return(one())
+    ll <- sum(log(s))
+    if (is.finite(ll) && is.finite(ll_old) &&
+        abs(ll - ll_old) < tol * abs(ll)) break
+    ll_old <- ll
+  }
+
+  o <- order(tau); tau <- tau[o]; a <- a[o]
+  if (tau[2] / tau[1] < min_ratio || min(a) < min_area) return(one())
+
+  tibble::tibble(n_components = 2L, tau_fast_ms = tau[1],
+                 tau_slow_ms = tau[2], area_fast = a[1],
+                 mean_ms = mean(x), n_events = length(x))
+}
 ```
 
 # 1. Find the files
@@ -718,6 +810,40 @@ names(recs) <- manifest$phenotype
 n_before <- purrr::imap_dfr(recs, function(arms, ph)
   tibble::tibble(phenotype = ph, arm = names(arms),
                  n_read = vapply(arms, nrow, integer(1))))
+
+# Table 1 of the manuscript, built here because this is the last point at
+# which the seed records are at their full length. Every other row count in
+# the paper should be traced to this file rather than re-typed: transcribing
+# them by hand has already produced a column that is one short in every row.
+seed_inventory <- purrr::imap_dfr(recs, function(arms, ph) {
+  d  <- arms$Real
+  fs <- fs_of(d)
+  tibble::tibble(
+    phenotype  = ph,
+    seed_file  = basename(manifest$raw[manifest$phenotype == ph]),
+    n_rows     = nrow(d),
+    sample_khz = round(fs / 1000, 3),
+    duration_s = nrow(d) / fs,
+    max_levels = max(d$channels),
+    popen      = mean(d$channels > 0),
+    mean_pA    = mean(d$current),
+    sd_pA      = stats::sd(d$current))
+})
+
+nice_kable(seed_inventory, digits = 4,
+           caption = paste("Table 1. Seed records as read, before any",
+                           "cropping. n_rows is the number of usable rows",
+                           "read from each file and is the figure the",
+                           "manuscript should quote."))
+
+readr::write_csv(seed_inventory, file.path(CFG$out_dir, "table1_seed_data.csv"))
+
+# The block-join test needs the diffusion arm at its full generated length.
+# Cropping to the shortest arm shortens it by up to a quarter, which moves the
+# last join past the end of the record and would leave the test quietly
+# examining fewer joins than the record actually contains. Stashed here, before
+# the crop, and used by nothing except the seam figures.
+recs_full_diffusion <- purrr::map(recs, function(arms) arms$Diffusion)
 
 # Every arm of a phenotype is cropped to the row count of its shortest arm.
 # Rows, not seconds and not file size: the metrics are computed per sample, and
@@ -1456,6 +1582,10 @@ paired_stats <- wide |>
   ) |>
   dplyr::mutate(
     n_eff   = n - n_ties,
+    # Decided from the counts, not from the verdict string. The string gets
+    # " (n tied)" appended below, which defeated the != comparison that used
+    # to count unanimous metrics and reported a tied metric as unanimous.
+    unanimous = n_eff > 0 & (n_favour_diff == n_eff | n_favour_diff == 0),
     verdict = dplyr::case_when(
       n_eff == 0             ~ "no separation: all differences exactly tied",
       n_favour_diff == n_eff ~ "consistent: Diffusion",
@@ -1464,7 +1594,8 @@ paired_stats <- wide |>
     verdict = dplyr::if_else(n_ties > 0 & n_eff > 0,
                              paste0(verdict, " (", n_ties, " tied)"), verdict)) |>
   dplyr::select(metric, better, n, n_ties, median_diff, mean_diff, sd_diff,
-                n_favour_diff, p_paired_t, ci_lo, ci_hi, p_sign, verdict)
+                n_favour_diff, p_paired_t, ci_lo, ci_hi, p_sign, unanimous,
+                verdict)
 
 nice_kable(paired_stats, digits = 5,
              caption = paste("Pooled paired comparison, Diffusion minus",
@@ -1496,8 +1627,14 @@ if (min_p_sign > 0.05) {
 }
 
 cat(sprintf("\nUnanimous metrics: %d of %d.\n",
-            sum(paired_stats$verdict != "inconsistent across phenotypes"),
-            nrow(paired_stats)))
+            sum(paired_stats$unanimous), nrow(paired_stats)))
+
+if (any(paired_stats$n_ties > 0)) {
+  cat("Metrics with exact ties, which are excluded from the unanimity count ",
+      "rather than counted against it: ",
+      paste(paired_stats$metric[paired_stats$n_ties > 0], collapse = ", "),
+      ".\n", sep = "")
+}
 ```
 
 The paired t-test above assumes the five differences are roughly normal, which
@@ -2227,6 +2364,44 @@ save_fig(p_selfcon, "fig_self_consistency", width = 10, height = 1.5 * n_ph + 1)
 readr::write_csv(sc_dwell, file.path(CFG$out_dir, "self_consistency_dwells.csv"))
 ```
 
+## Dwell time constants
+
+Section 3.6 of the manuscript asks for exponential time constants, not mean
+dwells. Both are fitted here from the same two dwell sets the self-consistency
+step already produces: the arm's own labels, which for the diffusion arm are
+the exact conditioning ground truth, and the idealisation recovered from that
+arm's current by a half-amplitude criterion. The difference between them is the
+missed-event loss.
+
+Where the column reports one component, two could not be supported and the mean
+dwell is the only defensible summary for that row. That is a property of the
+record, not a failure of the fit: a phenotype whose closed dwells average three
+or four samples has no exponential structure left to resolve.
+
+```{r dwell-tau}
+tau_fits <- sc_dwell |>
+  dplyr::group_by(phenotype, source, state, origin) |>
+  dplyr::group_modify(~ fit_exp_mixture(.x$dwell_ms)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(origin = dplyr::recode(origin,
+                  `Own labels` = "true",
+                  `Recovered from current` = "recovered"))
+
+nice_kable(tau_fits, digits = 4,
+           caption = paste("Dwell time constants. 'true' is the arm's own",
+                           "label column, which for the diffusion arm is the",
+                           "conditioning ground truth; 'recovered' is the",
+                           "idealisation recovered from that arm's current.",
+                           "n_components is 1 where a two-component fit could",
+                           "not be supported."))
+
+readr::write_csv(tau_fits, file.path(CFG$out_dir, "dwell_tau_fits.csv"))
+
+cat(sprintf(
+  "\nTwo-component fits supportable in %d of %d phenotype/state/origin cells.\n",
+  sum(tau_fits$n_components == 2), nrow(tau_fits)))
+```
+
 ## Figure: slow envelope
 
 ```{r fig-env, fig.height = 6}
@@ -2240,6 +2415,42 @@ p_env <- pull_all("env") |>
   theme_channel()
 p_env
 save_fig(p_env, "fig_envelope", width = 8, height = 2.2 * ceiling(n_ph / 2) + 1)
+```
+
+The density above says whether the envelope has the right spread; it says
+nothing about whether it wanders on the right timescale, because a distribution
+has no time axis. The panel below is the envelope as a time course, which is
+what the manuscript's Figure 4A shows. It was previously produced only by
+`DiffuChannel_analysis.Rmd`, one record at a time.
+
+```{r fig-env-time, fig.height = 7}
+# idx counts blocks of slow_factor samples, so seconds need the rate of the arm
+# that block came from. Joined from a lookup rather than computed per row: the
+# envelope tables run to tens of thousands of rows per phenotype.
+fs_tbl <- purrr::imap_dfr(FS_MAIN, function(fs, ph)
+  tibble::tibble(phenotype = ph, source = names(fs), fs = unname(fs)))
+
+env_time <- pull_all("env") |>
+  dplyr::left_join(fs_tbl, by = c("phenotype", "source")) |>
+  dplyr::mutate(time_s = idx * CFG$slow_factor / fs,
+                source = factor(source, levels = c("Real", "Diffusion", "GAN")))
+
+if (any(!is.finite(env_time$time_s)))
+  stop("An envelope row has no rate, so its time axis is undefined. Check that ",
+       "FS_MAIN names every arm present in the env tables.")
+
+p_env_time <- ggplot(env_time, aes(time_s, value, colour = source)) +
+  geom_line(linewidth = 0.3) +
+  facet_grid(phenotype ~ source, scales = "free_y",
+             labeller = labeller(
+               phenotype = function(x) gsub("_", "\n", x, fixed = TRUE))) +
+  scale_colour_manual(values = pal, guide = "none") +
+  labs(x = "Time (s)", y = "Envelope current (pA)") +
+  theme_channel() +
+  theme(strip.text.y = element_text(angle = 270, hjust = 0.5, vjust = 0.5))
+
+p_env_time
+save_fig(p_env_time, "fig_envelope_time", width = 8, height = 1.4 * n_ph + 1)
 ```
 
 ## Figure: manifold projections (optional)
@@ -2324,6 +2535,185 @@ save_fig(p_proj_tsne, "fig_manifold_tsne", width = 7.5, height = 2.3 * n_ph + 1)
 readr::write_csv(proj, file.path(CFG$out_dir, "manifold_coordinates.csv"))
 ```
 
+## Cluster separation of the projections
+
+The projections above are judged by eye, which is not a measurement. This tests
+whether the real and synthetic point clouds are separable in the embedding,
+using the permutation approach of ClusterSignificance as in the DeepGANnel
+paper. A *large* p is the favourable outcome here: it means the two clouds
+cannot be told apart, which is the opposite of the usual reading and is worth
+stating explicitly in the legend.
+
+The test is run within a phenotype and within a projection method, since the
+coordinates of one embedding mean nothing in another.
+
+```{r cluster-test, eval = CFG$do_manifold && isTRUE(CFG$do_cluster_test)}
+if (!requireNamespace("ClusterSignificance", quietly = TRUE)) {
+  message("ClusterSignificance is not installed, so [[cluster_p]] cannot be ",
+          "filled. It is a Bioconductor package:\n",
+          '  BiocManager::install("ClusterSignificance")\n',
+          "Either install it, or delete the ClusterSignificance sentence and ",
+          "reference [49] from Methods 2.9 and the claim from Section 3.8.")
+  cluster_tbl <- NULL
+} else {
+  # pcp() takes a two-column matrix and a grouping factor and returns a
+  # p-value for every pairwise group comparison, so one call per phenotype
+  # per method covers both Real-vs-Diffusion and Real-vs-GAN.
+  cluster_one <- function(d) {
+    mat <- as.matrix(d[, c("x", "y")])
+    grp <- factor(as.character(d$source))
+    if (dplyr::n_distinct(grp) < 2 || nrow(mat) < 10) return(NULL)
+    pe <- ClusterSignificance::permute(
+      mat = mat, groups = grp, iter = CFG$n_perm_cluster, projmethod = "pcp")
+    p <- ClusterSignificance::pvalue(pe)
+    tibble::tibble(comparison = names(p), p = as.numeric(p))
+  }
+
+  cluster_tbl <- proj |>
+    dplyr::group_by(phenotype, method) |>
+    dplyr::group_modify(~ {
+      r <- tryCatch(cluster_one(.x),
+                    error = function(e)
+                      tibble::tibble(comparison = "failed",
+                                     p = NA_real_,
+                                     note = conditionMessage(e)))
+      if (is.null(r)) tibble::tibble(comparison = NA_character_, p = NA_real_) else r
+    }) |>
+    dplyr::ungroup()
+
+  nice_kable(cluster_tbl, digits = 4,
+             caption = paste("ClusterSignificance permutation p-values for",
+                             "separation between the point clouds in each",
+                             "embedding. A large p means the clouds are not",
+                             "separable, which is the favourable result."))
+
+  readr::write_csv(cluster_tbl,
+                   file.path(CFG$out_dir, "cluster_significance.csv"))
+
+  if (any(is.na(cluster_tbl$p)))
+    warning("Some cluster tests returned no p-value. Read the note column ",
+            "before quoting anything from this table.")
+}
+```
+
+## Figure: generation block joins
+
+Long records are assembled from overlapping blocks bridged by context-carry
+inpainting, so the one artefact this pipeline could plausibly introduce is a
+seam. If the inpainting works, the distribution of sample-to-sample differences
+in the neighbourhood of a join is indistinguishable from that within a block.
+If it does not, it shows up here rather than in review.
+
+This ran per record in `DiffuChannel_analysis.Rmd` and is done here for every
+phenotype, on the **uncropped** diffusion arm, since cropping would move the
+joins. Only the diffusion arm has joins at all: the GAN emits a record in one
+pass and the seed record was never assembled from anything.
+
+```{r fig-seams, fig.height = 7}
+step <- CFG$block_len - CFG$context_len
+half <- CFG$context_len %/% 2
+
+# Joins of one record, dropping any that fall within half a context length of
+# either end, where there is not enough material on both sides to compare.
+joins_of <- function(n) {
+  # seq() errors rather than returning nothing when the record is shorter
+  # than one block, so that case is caught before it is reached.
+  if (n <= step) return(numeric(0))
+  b <- seq(step, n - 1L, by = step)
+  b[b > CFG$context_len & b < (n - CFG$context_len)]
+}
+
+seam_one <- function(d, ph) {
+  n <- nrow(d)
+  b <- joins_of(n)
+  diffs <- diff(d$current)
+
+  if (!length(b)) {
+    return(list(
+      summary = tibble::tibble(phenotype = ph, n_samples = n, n_joins = 0L,
+                               ks_seam = NA_real_, p_seam = NA_real_,
+                               note = "single block, no joins to test"),
+      dens = NULL, trace = NULL, joins = numeric(0)))
+  }
+
+  near <- unique(unlist(lapply(b, function(i) seq(i - half, i + half))))
+  near <- near[near >= 1 & near <= length(diffs)]
+  far  <- setdiff(seq_along(diffs), near)
+
+  ks <- ks_safe(diffs[near], diffs[far])
+
+  # The two sets are compared at equal size, so the density panel cannot be
+  # read as a difference in smoothness that is really a difference in n.
+  far_s <- sample(far, min(length(far), length(near)))
+
+  # Decimated for drawing only. The statistic above uses every sample.
+  dec <- max(1L, n %/% 20000L)
+  keep <- seq(1L, n, by = dec)
+
+  list(
+    summary = tibble::tibble(
+      phenotype = ph, n_samples = n, n_joins = length(b),
+      ks_seam = unname(ks$statistic), p_seam = unname(ks$p.value),
+      note = sprintf("%d samples near a join, %d within blocks",
+                     length(near), length(far))),
+    dens = dplyr::bind_rows(
+      tibble::tibble(d = diffs[near],  where = "Near block join"),
+      tibble::tibble(d = diffs[far_s], where = "Within block")) |>
+      dplyr::mutate(phenotype = ph),
+    trace = tibble::tibble(phenotype = ph, time_s = d$time[keep],
+                           current = d$current[keep]),
+    joins = d$time[b])
+}
+
+res_seam <- purrr::imap(recs_full_diffusion, function(d, ph) seam_one(d, ph))
+
+seam_tbl   <- purrr::map_dfr(res_seam, "summary")
+seam_dens  <- purrr::map_dfr(res_seam, "dens")
+seam_trace <- purrr::map_dfr(res_seam, "trace")
+seam_lines <- purrr::imap_dfr(res_seam, function(r, ph)
+  if (length(r$joins)) tibble::tibble(phenotype = ph, time_s = r$joins) else NULL)
+
+nice_kable(seam_tbl, digits = 4,
+           caption = paste("Block joins in the diffusion arm. ks_seam compares",
+                           "sample-to-sample differences within half a carried",
+                           "context of a join against those within blocks. A",
+                           "small statistic means the join is not detectable in",
+                           "the output."))
+
+readr::write_csv(seam_tbl, file.path(CFG$out_dir, "seam_test.csv"))
+```
+
+```{r fig-seam-panels, fig.height = 7}
+if (nrow(seam_trace)) {
+  p_long <- ggplot(seam_trace, aes(time_s, current)) +
+    geom_line(linewidth = 0.15, colour = pal[["Diffusion"]]) +
+    { if (nrow(seam_lines))
+        geom_vline(data = seam_lines, aes(xintercept = time_s),
+                   linetype = "dashed", colour = "grey55", linewidth = 0.3) } +
+    facet_wrap(~ phenotype, scales = "free", ncol = 1) +
+    labs(x = "Time (s)", y = "Current (pA)") +
+    theme_channel()
+  print(p_long)
+  save_fig(p_long, "fig_long_record", width = 8, height = 1.4 * n_ph + 1)
+}
+
+if (nrow(seam_dens)) {
+  p_seam <- ggplot(seam_dens, aes(d, colour = where)) +
+    geom_density(linewidth = 0.6, adjust = 0.8) +
+    facet_wrap(~ phenotype, scales = "free", ncol = 2) +
+    scale_colour_manual(values = c("Near block join" = "#c0392b",
+                                   "Within block"    = "#1b1b1b")) +
+    labs(x = "Sample-to-sample difference (pA)", y = "Density") +
+    theme_channel()
+  print(p_seam)
+  save_fig(p_seam, "fig_seam_test", width = 8,
+           height = 2.2 * ceiling(n_ph / 2) + 1)
+} else {
+  message("No phenotype's diffusion record spans more than one block, so there ",
+          "are no joins to test. Check CFG$block_len against the record length.")
+}
+```
+
 # 7. Numbers for the manuscript
 
 Rows keyed to `[[placeholder]]` names. Pooled values are medians across
@@ -2341,9 +2731,15 @@ pooled <- scored |>
 placeholders <- dplyr::bind_rows(
   tibble::tibble(placeholder = "n_phenotypes", value = as.character(n_ph),
                  note = "paired seed records"),
+  # Two different totals, previously conflated under one name: the seed
+  # material that exists, and the subset actually scored after every arm of a
+  # phenotype was cropped to its shortest. The manuscript wants the first.
   tibble::tibble(placeholder = "n_samples_total",
+                 value = format(sum(seed_inventory$n_rows), big.mark = ","),
+                 note = "seed samples across all phenotypes, before cropping"),
+  tibble::tibble(placeholder = "n_samples_analysed",
                  value = format(sum(info$n_real), big.mark = ","),
-                 note = "seed samples across all phenotypes"),
+                 note = "seed samples actually scored, after cropping each phenotype to its shortest arm"),
   # Rate before unique, or floating-point dust splits one rate into several.
   tibble::tibble(placeholder = "sample_khz",
                  value = paste(unique(round(sort(info$fs_real) / 1000, 3)),
@@ -2359,7 +2755,63 @@ placeholders <- dplyr::bind_rows(
     dplyr::transmute(
       placeholder = paste0("unanimity_", gsub("[^A-Za-z0-9]+", "_", tolower(metric))),
       value = sprintf("%d/%d favour Diffusion", n_favour_diff, n),
-      note = verdict)
+      note = verdict),
+  # Dwell time constants for the diffusion arm, recovered against true, over
+  # the phenotypes where a two-component fit held. Reported per phenotype
+  # rather than pooled: a time constant is not comparable across records the
+  # way a distance is.
+  {
+    tf <- tau_fits |>
+      dplyr::filter(source == "Diffusion", n_components == 2L)
+    if (nrow(tf)) {
+      tf |>
+        dplyr::mutate(ph = gsub("^Phenotype_", "", phenotype)) |>
+        dplyr::group_by(state, origin) |>
+        dplyr::summarise(
+          value = paste(sprintf("%s %.3g/%.3g", ph, tau_fast_ms, tau_slow_ms),
+                        collapse = ", "),
+          n_ph = dplyr::n(), .groups = "drop") |>
+        dplyr::transmute(
+          placeholder = sprintf("tau_%s_%s", tolower(state), origin),
+          value = value,
+          note = sprintf("fast/slow tau in ms, per phenotype, %d of %d phenotypes supported two components",
+                         n_ph, dplyr::n_distinct(tau_fits$phenotype)))
+    } else {
+      tibble::tibble(placeholder = "tau_fits", value = "NOT SUPPORTED",
+                     note = "no phenotype supported a two-component dwell fit")
+    }
+  },
+  # Cluster separation, if the optional test ran.
+  {
+    if (exists("cluster_tbl") && !is.null(cluster_tbl) &&
+        any(is.finite(cluster_tbl$p))) {
+      cp <- dplyr::filter(cluster_tbl, is.finite(p))
+      tibble::tibble(
+        placeholder = "cluster_p",
+        value = sprintf("%s (%s to %s)", fmt(median(cp$p)),
+                        fmt(min(cp$p)), fmt(max(cp$p))),
+        note = sprintf("ClusterSignificance permutation p, median over %d tests; large p means not separable",
+                       nrow(cp)))
+    } else {
+      tibble::tibble(placeholder = "cluster_p", value = "NOT RUN",
+                     note = "ClusterSignificance absent or the test failed")
+    }
+  },
+  # Seam test. Reported as median and range like everything else pooled, and
+  # only over the phenotypes that actually had a join to test.
+  {
+    s <- dplyr::filter(seam_tbl, is.finite(ks_seam))
+    if (nrow(s))
+      tibble::tibble(
+        placeholder = "ks_seam",
+        value = sprintf("%s (%s to %s)", fmt(median(s$ks_seam)),
+                        fmt(min(s$ks_seam)), fmt(max(s$ks_seam))),
+        note = sprintf("median across %d phenotypes, %d joins tested in total",
+                       nrow(s), sum(s$n_joins)))
+    else
+      tibble::tibble(placeholder = "ks_seam", value = "NOT RUN",
+                     note = "no phenotype spanned more than one block")
+  }
 )
 
 nice_kable(placeholders, caption = "Values keyed to the manuscript placeholders.")
