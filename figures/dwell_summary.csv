@@ -1,9 +1,0 @@
-origin,state,n,mean_ms,median_ms
-GAN (network's own labels),Closed,57,161.57894736804445,102.4999999997611
-GAN (network's own labels),Open,56,14.107142857109977,9.299999999978326
-Ground truth (simulated),Closed,1142,3.601488616453953,0.7999999999981354
-Ground truth (simulated),Open,1142,5.155078809094816,1.5999999999962708
-Real (expert idealised),Closed,140,37.27714285705598,1.7499999999959213
-Real (expert idealised),Open,139,70.91151079120164,13.899999999967603
-Recovered from generated current,Closed,1312,4.531478658526024,1.1999999999972033
-Recovered from generated current,Open,1312,3.090472560968407,0.7999999999981354

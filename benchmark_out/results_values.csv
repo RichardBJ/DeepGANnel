@@ -1,37 +1,44 @@
 placeholder,value,note
 n_phenotypes,5,paired seed records
-n_samples_total,"1,846,941",seed samples across all phenotypes
-sample_khz,"10, 10.0000000000233, 20.0000000000466","acquisition rate(s), kHz"
-acf_rms_diffusion,0.03392 (0.004433 to 0.07455),"median across phenotypes, range in brackets"
-acf_rms_gan,0.04466 (0.01416 to 0.1447),"median across phenotypes, range in brackets"
-envelope_sd_pa__diffusion,1.728 (0.04299 to 3.374),"median across phenotypes, range in brackets"
-envelope_sd_pa__gan,1.465 (0.04797 to 3.998),"median across phenotypes, range in brackets"
-ks_amplitude_diffusion,0.065 (0.01639 to  0.16),"median across phenotypes, range in brackets"
-ks_amplitude_gan,0.09922 (0.03329 to 0.1951),"median across phenotypes, range in brackets"
-mmd_envelope_diffusion,0.009919 (0.001381 to 0.03522),"median across phenotypes, range in brackets"
-mmd_envelope_gan,0.02699 (0.005376 to 0.1153),"median across phenotypes, range in brackets"
-mmd_permutation_p_diffusion,0.004975 (0.004975 to 0.3234),"median across phenotypes, range in brackets"
-mmd_permutation_p_gan,0.004975 (0.004975 to 0.00995),"median across phenotypes, range in brackets"
-mmd_vs_real_diffusion,0.006747 (0.0001772 to 0.03907),"median across phenotypes, range in brackets"
-mmd_vs_real_gan,0.007481 (0.002566 to 0.0469),"median across phenotypes, range in brackets"
-mean_closed_dwell_ms__diffusion,3.601 (0.3932 to 161.6),"median across phenotypes, range in brackets"
-mean_closed_dwell_ms__gan,4.485 (0.2196 to   124),"median across phenotypes, range in brackets"
+n_samples_total,"1,846,941","seed samples across all phenotypes, before cropping"
+n_samples_analysed,"473,316","seed samples actually scored, after cropping each phenotype to its shortest arm"
+sample_khz,"10, 20","acquisition rate(s), kHz"
+acf_rms_diffusion,0.01909 (0.01165 to 0.06887),"median across phenotypes, range in brackets"
+acf_rms_gan,0.03908 (0.0263 to 0.1464),"median across phenotypes, range in brackets"
+envelope_sd_pa__diffusion,1.728 (0.04133 to 3.476),"median across phenotypes, range in brackets"
+envelope_sd_pa__gan,1.535 (0.04825 to 3.928),"median across phenotypes, range in brackets"
+ks_amplitude_diffusion,0.07343 (0.01977 to 0.2849),"median across phenotypes, range in brackets"
+ks_amplitude_gan,0.123 (0.02207 to 0.1478),"median across phenotypes, range in brackets"
+mmd_envelope_diffusion,0.009693 (2.885e-05 to 0.04906),"median across phenotypes, range in brackets"
+mmd_envelope_gan,0.02272 (0.007959 to 0.08477),"median across phenotypes, range in brackets"
+mmd_permutation_p_diffusion,0.004975 (0.004975 to 0.4229),"median across phenotypes, range in brackets"
+mmd_permutation_p_gan,0.00995 (0.004975 to 0.05473),"median across phenotypes, range in brackets"
+mmd_vs_real_diffusion,0.004778 (-0.0003896 to 0.06394),"median across phenotypes, range in brackets"
+mmd_vs_real_gan,0.004848 (0.001776 to 0.04871),"median across phenotypes, range in brackets"
+mean_closed_dwell_ms__diffusion,3.957 (0.3932 to 161.6),"median across phenotypes, range in brackets"
+mean_closed_dwell_ms__gan,4.083 (0.2201 to 112.1),"median across phenotypes, range in brackets"
 mean_open_dwell_ms__diffusion,14.11 (4.815 to 78.63),"median across phenotypes, range in brackets"
-mean_open_dwell_ms__gan,13.27 ( 4.16 to 22.57),"median across phenotypes, range in brackets"
-noise_sd_pa__diffusion,0.999 (0.04066 to 1.436),"median across phenotypes, range in brackets"
-noise_sd_pa__gan, 1.12 (0.05601 to 1.551),"median across phenotypes, range in brackets"
+mean_open_dwell_ms__gan,14.34 (3.824 to 21.51),"median across phenotypes, range in brackets"
+noise_sd_pa__diffusion,0.999 (0.04001 to 1.333),"median across phenotypes, range in brackets"
+noise_sd_pa__gan,1.164 (0.05438 to 1.519),"median across phenotypes, range in brackets"
 open_probability_diffusion,0.7548 (0.079 to 0.9879),"median across phenotypes, range in brackets"
-open_probability_gan,0.5262 (0.154 to 0.9854),"median across phenotypes, range in brackets"
-log10_psd_rms_diffusion,0.2734 (0.1018 to 0.7906),"median across phenotypes, range in brackets"
-log10_psd_rms_gan,0.195 (0.1553 to 0.6658),"median across phenotypes, range in brackets"
+open_probability_gan,0.5461 (0.1592 to 0.9849),"median across phenotypes, range in brackets"
+log10_psd_rms_diffusion,0.1781 (0.09052 to 0.6356),"median across phenotypes, range in brackets"
+log10_psd_rms_gan,0.3331 (0.105 to 0.8146),"median across phenotypes, range in brackets"
 unanimity_acf_rms,5/5 favour Diffusion,consistent: Diffusion
 unanimity_envelope_sd_pa_,3/5 favour Diffusion,inconsistent across phenotypes
-unanimity_ks_amplitude,4/5 favour Diffusion,inconsistent across phenotypes
+unanimity_ks_amplitude,3/5 favour Diffusion,inconsistent across phenotypes
 unanimity_mmd_envelope,4/5 favour Diffusion,inconsistent across phenotypes
-unanimity_mmd_permutation_p,2/5 favour Diffusion,inconsistent across phenotypes
-unanimity_mmd_vs_real,4/5 favour Diffusion,inconsistent across phenotypes
+unanimity_mmd_permutation_p,2/5 favour Diffusion,inconsistent across phenotypes (1 tied)
+unanimity_mmd_vs_real,3/5 favour Diffusion,inconsistent across phenotypes
 unanimity_mean_closed_dwell_ms_,5/5 favour Diffusion,consistent: Diffusion
-unanimity_mean_open_dwell_ms_,3/5 favour Diffusion,inconsistent across phenotypes
-unanimity_noise_sd_pa_,4/5 favour Diffusion,inconsistent across phenotypes
-unanimity_open_probability,5/5 favour Diffusion,consistent: Diffusion
-unanimity_log10_psd_rms,2/5 favour Diffusion,inconsistent across phenotypes
+unanimity_mean_open_dwell_ms_,4/5 favour Diffusion,inconsistent across phenotypes
+unanimity_noise_sd_pa_,3/5 favour Diffusion,inconsistent across phenotypes
+unanimity_open_probability,4/5 favour Diffusion,inconsistent across phenotypes
+unanimity_log10_psd_rms,3/5 favour Diffusion,inconsistent across phenotypes
+tau_closed_recovered,"A 1.05/26.4, B 0.848/164, C 0.168/49.1, E 0.326/2.53","fast/slow tau in ms, per phenotype, 4 of 5 phenotypes supported two components"
+tau_closed_true,"A 1.09/40.4, C 1.5/133, E 0.421/3.37","fast/slow tau in ms, per phenotype, 3 of 5 phenotypes supported two components"
+tau_open_recovered,"A 0.767/9.52, B 1.31/15.3, C 0.456/18.9, E 0.262/4.18","fast/slow tau in ms, per phenotype, 4 of 5 phenotypes supported two components"
+tau_open_true,"A 0.853/9.84, C 0.84/95.4","fast/slow tau in ms, per phenotype, 2 of 5 phenotypes supported two components"
+cluster_p,NOT RUN,ClusterSignificance absent or the test failed
+ks_seam,0.02177 (0.01788 to 0.02344),"median across 5 phenotypes, 15 joins tested in total"
