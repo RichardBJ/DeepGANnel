@@ -1,4 +1,4 @@
-*.Identifier
+*.Indentifier
 images
 checkpoint*
 epoch
@@ -6,8 +6,6 @@ backup/*.*
 *.png
 checkpointsaved/*
 temp/*
-*.Zone.Identifier
-*:Zone.Identifier
 
 best/*.data-00000-of-00001
 best/*.index

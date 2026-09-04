@@ -1,16 +1,3 @@
-phenotype,arm,n,has_time,fs,longest_closed,longest_open,popen,max_level,baseline,unit_amp,cols
-Phenotype_A,Real,73316,FALSE,10000.0000000011,3561,636,0.5825058650226417,1,0.18172,8.633289999999999,"inferred: chan=col2 cur=col1 time=none, assuming 10000 Hz"
-Phenotype_A,Diffusion,73316,TRUE,10000.0000000011,1533,582,0.5784412679360577,1,0.283912181854248,8.391029834747313,named columns: chan=col2 cur=col3 time=col1
-Phenotype_A,GAN,73316,FALSE,10000.0000000011,2459,426,0.5461427246440068,1,0.010528873,8.850026127,"inferred: chan=col2 cur=col1 time=none, assuming 10000 Hz"
-Phenotype_B,Real,100000,FALSE,10000.000000023307,8490,698,0.07154,1,0,9.995102,"inferred: chan=col2 cur=col1 time=none, assuming 10000 Hz"
-Phenotype_B,Diffusion,100000,TRUE,10000.000000023307,9668,520,0.079,1,0.04040250182151795,9.555923849344252,named columns: chan=col2 cur=col3 time=col1
-Phenotype_B,GAN,100000,FALSE,10000.000000023307,4668,667,0.15921,1,-0.17488137,10.03163737,"inferred: chan=col2 cur=col1 time=none, assuming 10000 Hz"
-Phenotype_C,Real,100000,FALSE,10000.000000023307,7709,5715,0.60373,1,-0.416449126149386,0.4360311702779037,"inferred: chan=col2 cur=col1 time=none, assuming 10000 Hz"
-Phenotype_C,Diffusion,100000,TRUE,10000.000000023307,6570,3540,0.75481,1,-0.421489953994751,0.4814729243516922,named columns: chan=col2 cur=col3 time=col1
-Phenotype_C,GAN,100000,FALSE,10000.000000023307,3597,1855,0.48575,1,-0.37396913766861,0.4212167933583263,"inferred: chan=col2 cur=col1 time=none, assuming 10000 Hz"
-Phenotype_D,Real,100000,TRUE,10000.000000023307,10,1832,0.98828,1,0.337,0.432,inferred: chan=col3 cur=col2 time=col1
-Phenotype_D,Diffusion,100000,TRUE,10000.000000023307,17,1937,0.98789,1,0.361485362052917,0.39556592702865606,named columns: chan=col2 cur=col3 time=col1
-Phenotype_D,GAN,100000,TRUE,10000.000000023307,6,950,0.9849,1,0.32987116277217854,0.44461645185947396,named columns: chan=col3 cur=col2 time=col1
-Phenotype_E,Real,100000,TRUE,20000.000000046613,4088,665,0.8171,1,3.996093,7.8173569999999994,inferred: chan=col3 cur=col2 time=col1
-Phenotype_E,Diffusion,100000,TRUE,10000.000000023307,284,616,0.85707,1,4.92185735702515,6.80378580093385,named columns: chan=col2 cur=col3 time=col1
-Phenotype_E,GAN,100000,FALSE,10000.000000023307,149,579,0.88037,1,5.0013337,6.4607493,"inferred: chan=col2 cur=col1 time=none, assuming 10000 Hz"
+version https://git-lfs.github.com/spec/v1
+oid sha256:93d3f653dd230eedc41ae7345d2bc5444604b9db79c5297fa58506144ecb7d99
+size 2435

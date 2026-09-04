@@ -1,6 +1,0 @@
-phenotype,n_samples,n_joins,ks_seam,p_seam,note
-Phenotype_A,100000,3,0.02151430271799751,0.48452111155083866,"1539 samples near a join, 98460 within blocks"
-Phenotype_B,100000,3,0.021772964471575715,0.46903856164632274,"1539 samples near a join, 98460 within blocks"
-Phenotype_C,100000,3,0.023439150045198986,0.37582087202557823,"1539 samples near a join, 98460 within blocks"
-Phenotype_D,100000,3,0.01788341630703477,0.7176370418513782,"1539 samples near a join, 98460 within blocks"
-Phenotype_E,100000,3,0.02215005826571303,0.4469234762137674,"1539 samples near a join, 98460 within blocks"
