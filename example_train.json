@@ -1,0 +1,11 @@
+{
+  "action": "train",
+  "train": {
+    "folder": "./pages_modelb2",
+    "use_synthetic": false,
+    "epochs": 20,
+    "resume": true,
+    "base_checkpoint": "ion_channel_diffusion_model.pt",
+    "out_dir": "./modelb2_outputs"
+  }
+}

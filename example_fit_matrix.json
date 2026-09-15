@@ -1,0 +1,8 @@
+{
+  "action": "fit_matrix",
+  "fit_matrix": {
+    "folder": "./pages_modelb2",
+    "page_idx": 0,
+    "open_states": "3,4"
+  }
+}
