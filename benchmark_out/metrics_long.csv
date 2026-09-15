@@ -8,7 +8,6 @@ Phenotype_A,Mean open dwell (ms),Real,reference,4.7505005561735265
 Phenotype_A,Mean closed dwell (ms),Real,reference,3.401
 Phenotype_A,MMD vs real,Diffusion,lower,-3.896145772851467e-4
 Phenotype_A,MMD permutation p,Diffusion,higher,0.4228855721393035
-Phenotype_A,MMD z-score,Diffusion,lower,-0.224043676659668
 Phenotype_A,KS amplitude,Diffusion,lower,0.05747722188881008
 Phenotype_A,log10 PSD RMS,Diffusion,lower,0.6355639217385332
 Phenotype_A,ACF RMS,Diffusion,lower,0.06886505727746559
@@ -20,7 +19,6 @@ Phenotype_A,Mean open dwell (ms),Diffusion,match_real,5.437051282051282
 Phenotype_A,Mean closed dwell (ms),Diffusion,match_real,3.9573623559539053
 Phenotype_A,MMD vs real,GAN,lower,0.0038064734130762723
 Phenotype_A,MMD permutation p,GAN,higher,0.05472636815920398
-Phenotype_A,MMD z-score,GAN,lower,1.7933880291899746
 Phenotype_A,KS amplitude,GAN,lower,0.08906650662883955
 Phenotype_A,log10 PSD RMS,GAN,lower,0.6062677084678223
 Phenotype_A,ACF RMS,GAN,lower,0.09234192766564994
@@ -39,7 +37,6 @@ Phenotype_B,Mean open dwell (ms),Real,reference,15.552173913043479
 Phenotype_B,Mean closed dwell (ms),Real,reference,197.54468085106382
 Phenotype_B,MMD vs real,Diffusion,lower,2.966813942851809e-4
 Phenotype_B,MMD permutation p,Diffusion,higher,0.21393034825870647
-Phenotype_B,MMD z-score,Diffusion,lower,0.5282385595198437
 Phenotype_B,KS amplitude,Diffusion,lower,0.019770000000000003
 Phenotype_B,log10 PSD RMS,Diffusion,lower,0.17809039798872534
 Phenotype_B,ACF RMS,Diffusion,lower,0.011650434655843013
@@ -51,7 +48,6 @@ Phenotype_B,Mean open dwell (ms),Diffusion,match_real,14.107142857142858
 Phenotype_B,Mean closed dwell (ms),Diffusion,match_real,161.57894736842104
 Phenotype_B,MMD vs real,GAN,lower,0.009910161364597714
 Phenotype_B,MMD permutation p,GAN,higher,0.004975124378109453
-Phenotype_B,MMD z-score,GAN,lower,20.357072051611677
 Phenotype_B,KS amplitude,GAN,lower,0.12301999999999999
 Phenotype_B,log10 PSD RMS,GAN,lower,0.33314015000484515
 Phenotype_B,ACF RMS,GAN,lower,0.030172546439835322
@@ -70,7 +66,6 @@ Phenotype_C,Mean open dwell (ms),Real,reference,79.43815789473685
 Phenotype_C,Mean closed dwell (ms),Real,reference,52.14078947368421
 Phenotype_C,MMD vs real,Diffusion,lower,0.06394461996624856
 Phenotype_C,MMD permutation p,Diffusion,higher,0.004975124378109453
-Phenotype_C,MMD z-score,Diffusion,lower,28.81714453614488
 Phenotype_C,KS amplitude,Diffusion,lower,0.28493999999999997
 Phenotype_C,log10 PSD RMS,Diffusion,lower,0.27778941133079754
 Phenotype_C,ACF RMS,Diffusion,lower,0.019094115351791417
@@ -82,7 +77,6 @@ Phenotype_C,Mean open dwell (ms),Diffusion,match_real,78.62604166666667
 Phenotype_C,Mean closed dwell (ms),Diffusion,match_real,25.540625
 Phenotype_C,MMD vs real,GAN,lower,0.04870682865108922
 Phenotype_C,MMD permutation p,GAN,higher,0.004975124378109453
-Phenotype_C,MMD z-score,GAN,lower,17.0784121315968
 Phenotype_C,KS amplitude,GAN,lower,0.14776999999999998
 Phenotype_C,log10 PSD RMS,GAN,lower,0.814614143142093
 Phenotype_C,ACF RMS,GAN,lower,0.1463942213061201
@@ -101,7 +95,6 @@ Phenotype_D,Mean open dwell (ms),Real,reference,31.879999999925698
 Phenotype_D,Mean closed dwell (ms),Real,reference,0.37928802588908367
 Phenotype_D,MMD vs real,Diffusion,lower,0.010143425347045154
 Phenotype_D,MMD permutation p,Diffusion,higher,0.004975124378109453
-Phenotype_D,MMD z-score,Diffusion,lower,21.710800910781895
 Phenotype_D,KS amplitude,Diffusion,lower,0.07664
 Phenotype_D,log10 PSD RMS,Diffusion,lower,0.1654953868155547
 Phenotype_D,ACF RMS,Diffusion,lower,0.038803843753962106
@@ -113,7 +106,6 @@ Phenotype_D,Mean open dwell (ms),Diffusion,match_real,32.07435064927589
 Phenotype_D,Mean closed dwell (ms),Diffusion,match_real,0.3931818181809018
 Phenotype_D,MMD vs real,GAN,lower,0.0017757578797440443
 Phenotype_D,MMD permutation p,GAN,higher,0.009950248756218905
-Phenotype_D,MMD z-score,GAN,lower,3.313056439153049
 Phenotype_D,KS amplitude,GAN,lower,0.022070000000000003
 Phenotype_D,log10 PSD RMS,GAN,lower,0.10499880052723855
 Phenotype_D,ACF RMS,GAN,lower,0.03907830967310342
@@ -132,7 +124,6 @@ Phenotype_E,Mean open dwell (ms),Real,reference,4.898681055144458
 Phenotype_E,Mean closed dwell (ms),Real,reference,1.0965227817720247
 Phenotype_E,MMD vs real,Diffusion,lower,0.004777931966044036
 Phenotype_E,MMD permutation p,Diffusion,higher,0.004975124378109453
-Phenotype_E,MMD z-score,Diffusion,lower,5.542560480521096
 Phenotype_E,KS amplitude,Diffusion,lower,0.07343
 Phenotype_E,log10 PSD RMS,Diffusion,lower,0.09052182255803277
 Phenotype_E,ACF RMS,Diffusion,lower,0.015570794842489933
@@ -144,7 +135,6 @@ Phenotype_E,Mean open dwell (ms),Diffusion,match_real,4.814999999988777
 Phenotype_E,Mean closed dwell (ms),Diffusion,match_real,0.8029775280880161
 Phenotype_E,MMD vs real,GAN,lower,0.00484780728445211
 Phenotype_E,MMD permutation p,GAN,higher,0.009950248756218905
-Phenotype_E,MMD z-score,GAN,lower,5.336416385278646
 Phenotype_E,KS amplitude,GAN,lower,0.1381
 Phenotype_E,log10 PSD RMS,GAN,lower,0.12236963916326521
 Phenotype_E,ACF RMS,GAN,lower,0.02630094826228317
