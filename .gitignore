@@ -8,6 +8,7 @@ checkpointsaved/*
 temp/*
 *.Zone.Identifier
 *:Zone.Identifier
-
+*.pyc
 best/*.data-00000-of-00001
 best/*.index
+.DS_Store
