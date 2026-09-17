@@ -12,3 +12,6 @@ temp/*
 best/*.data-00000-of-00001
 best/*.index
 .DS_Store
+.DS_Store
+*.pyc
+__pycache__/diffusion_app.cpython-310.pyc
